@@ -1,0 +1,6 @@
+R1: Account balances never exceed the credit limit
+R2: Clients can deposit and withdraw dollars
+R3: Tellers (but not clients) can date a dollar deposit or withdrawal differently than 'today' (e.g. as 'tomorrow')
+R4: Tellers (but not clients) can access withdrawals on a given date
+R5: Maximum total withdrawal per day is $5000
+R6: Clients can access the total amount of dollars deposited and dollars withdrawn from their account
