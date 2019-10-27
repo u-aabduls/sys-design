@@ -1,0 +1,23 @@
+-- This use case file shows more error cases.
+
+-- Set up some chess pieces for the game
+setup_chess (N, 2, 1)
+setup_chess (R, 1, 4)
+setup_chess (P, 3, 4)
+setup_chess (B, 4, 3)
+
+-- Error: game not yet started
+moves (5, 1)
+
+-- Start a new game
+start_game
+
+-- Error: invalid slot (5, 1)
+moves (5, 1)
+
+-- Error: invalid slot (4, 0)
+moves (4, 0)
+
+-- Error: slot (2, 2) not occupied
+moves (2, 2)
+

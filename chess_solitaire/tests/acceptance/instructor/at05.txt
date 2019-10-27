@@ -1,0 +1,44 @@
+-- This use case shows two runs of an example game: losing and winning. 
+
+setup_chess(B, 1, 4)
+setup_chess(B, 2, 1)
+setup_chess(Q, 4, 1)
+setup_chess(R, 4, 3)
+
+start_game
+
+-- Bishop@(2, 1) moves south and captures Rook@(4, 3)
+moves(2, 1)
+move_and_capture(2, 1, 4, 3) 
+-- Queen@(4, 1) moves east and captures Bishop@(4, 3)
+moves(4, 1)
+move_and_capture(4, 1, 4, 3) 
+
+-- No move (that can result a capture) is then possible!
+-- Game is over and the player loses
+
+-- Error: game is already over
+moves(4, 1)
+move_and_capture(4, 1, 4, 3)
+
+reset_game
+
+setup_chess(B, 1, 4)
+setup_chess(B, 2, 1)
+setup_chess(Q, 4, 1)
+setup_chess(R, 4, 3)
+
+start_game
+
+-- Bishop@(1, 4) moves south-west and captures Queen@(4, 1)
+moves(1, 4)
+move_and_capture(1, 4, 4, 1) 
+-- Rook@(4, 3) moves west and captures Bishop@(4, 1)
+moves(4, 3)
+move_and_capture(4, 3, 4, 1)
+-- Rook@(4, 1) moves north and captures Bishop@(2, 1)
+moves(4, 1)
+move_and_capture(4, 1, 2, 1)
+
+
+

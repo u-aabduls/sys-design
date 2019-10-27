@@ -1,0 +1,32 @@
+-- This use case file shows another number of error cases.
+
+-- Set up some chess pieces for the game
+setup_chess (N, 2, 1)
+setup_chess (R, 1, 4)
+setup_chess (P, 3, 4)
+setup_chess (B, 4, 3)
+setup_chess (Q, 3, 2)
+
+-- Error: game not yet started
+move_and_capture (5, 1, 0, 4)
+
+-- Start a new game
+start_game
+
+-- Error: invalid source slot (5, 1)
+move_and_capture (5, 1, 0, 4)
+
+-- Error: invalid target slot (0, 4)
+move_and_capture (4, 2, 0, 4)
+
+-- Error: unoccupied slot (4, 2)
+move_and_capture (4, 2, 1, 3)
+
+-- Error: unoccupied slot (1, 3)
+move_and_capture (4, 3, 1, 3)
+
+-- Error: invalid move
+move_and_capture (4, 3, 1, 4)
+
+-- Error: block exists
+move_and_capture (4, 3, 2, 1)

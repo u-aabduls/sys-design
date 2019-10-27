@@ -1,0 +1,38 @@
+-- This use case file shows a number of error cases.
+
+-- Set up some chess pieces for the game
+setup_chess (N, 2, 1)
+setup_chess (R, 1, 4)
+setup_chess (P, 3, 4)
+
+-- Error: (1, 4) already occupied
+setup_chess (Q, 1, 4)
+
+-- Error: Invalid row number
+setup_chess (B, 5, 3)
+-- Error: Invalid column number
+setup_chess (B, 0, 3)
+
+setup_chess (B, 4, 3)
+
+-- Move Bishop@(4,3) to capture Knight@(2, 1)
+-- Error: Game not yet started
+move_and_capture(4, 3, 2, 1)
+
+-- Show all possible moves for Knight@(2, 1)
+-- Error: Game not yet started
+moves(2, 1)
+
+-- Error: A game has not been started yet
+reset_game
+
+-- Start a new game
+start_game
+
+-- Add Queen to (2, 2)
+-- Error: Game already started
+setup_chess (Q, 2, 2)
+
+-- Start a new game
+-- Error: Game already started
+start_game

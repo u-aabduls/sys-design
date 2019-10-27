@@ -1,0 +1,36 @@
+-- This use case shows two runs of an example game: losing and winning. 
+
+setup_chess(N, 1, 2)
+setup_chess(Q, 2, 2)
+setup_chess(R, 2, 4)
+setup_chess(P, 3, 1)
+
+start_game
+
+moves(2, 4)
+move_and_capture(2,4,2,2)
+moves(3, 1)
+move_and_capture(3,1,2,2)
+
+-- Game over: the player loses
+
+reset_game
+
+setup_chess(N, 1, 2)
+setup_chess(Q, 2, 2)
+setup_chess(R, 2, 4)
+setup_chess(P, 3, 1)
+
+start_game
+
+-- Pawn@(3, 1) moves north-east and captures Queen@(2, 2)
+moves(3, 1)
+move_and_capture(3, 1, 2, 2) 
+-- Rook@(2, 4) moves west and captures Pawn@(2, 2)
+moves(2, 4)
+move_and_capture(2, 4, 2, 2)
+-- Rook@(2, 2) moves north and captures Knight@(1, 2)
+moves(2, 2)
+move_and_capture(2, 2, 1, 2)
+
+-- Game over: the player wins 

@@ -1,0 +1,8 @@
+setup_chess(N, 1, 2)
+
+start_game
+
+-- only one chess piece to start with: the user wins immediately!
+
+-- Error: game already over
+moves(1, 2)
