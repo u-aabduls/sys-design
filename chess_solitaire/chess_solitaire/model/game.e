@@ -1,5 +1,5 @@
 note
-	description: "A default business model."
+	description: "A CHESS SOLITAIRE game."
 	author: "Umar Abdulselam"
 	date: "$Date$"
 	revision: "$Revision$"
@@ -14,36 +14,41 @@ inherit
 		end
 
 create {GAME_ACCESS}
+
 	make
+
+
+feature -- GAME attributes
+
+	game_board, moves_board: ARRAY2[STRING]
+	chess_pieces: ARRAY[STRING]
+	pieces_count: INTEGER
+	game_started, game_over, is_move_report: BOOLEAN
+	report: STRING
+
 
 feature {NONE} -- Initialization
 
 	make
-			-- Initialization for `Current'.
+			-- Initialization for `Current`.
 		do
-			create chess_pieces.make_filled(" ", 1, 6)
-			chess_pieces := << "K", "Q", "N", "B", "R", "P" >>
 			create game_board.make_filled (".", 4, 4)
 			create moves_board.make_filled (".", 4, 4)
 			game_started := false
 			game_over := false
 			is_move_report := false
 			pieces_count := 0
+			create chess_pieces.make_from_array (<< "K", "Q", "N", "B", "R", "P" >>)
 			report := "Game being Setup..."
 		end
 
-feature -- GAME attributes
 
-	chess_pieces: ARRAY[STRING]
-	game_board, moves_board: ARRAY2[STRING]
-	pieces_count: INTEGER
-	game_started, game_over, is_move_report: BOOLEAN
-	report: STRING
-
-feature -- GAME operations
+feature -- GAME commands
 
 	start_game
-	
+			-- Start the game with the current state
+			-- of `game_board`.
+
 		require
 			game_not_started:
 				not game_started
@@ -54,6 +59,7 @@ feature -- GAME operations
 
 
 	reset_game
+			-- Reset the game to its default state.
 
 		require
 			is_game_started:
@@ -64,6 +70,8 @@ feature -- GAME operations
 
 
 	setup_chess(chess: INTEGER; row: INTEGER; col: INTEGER)
+			-- Place a chess piece `chess` at the position
+			-- `game_board[row, col]`.
 
 		require
 			game_not_started:
@@ -84,7 +92,12 @@ feature -- GAME operations
 		end
 
 
-	moves(row: INTEGER; col: INTEGER; set: BOOLEAN): ARRAY2[STRING]
+	moves(row: INTEGER; col: INTEGER; flag: BOOLEAN): ARRAY2[STRING]
+			-- Display the possible moves for the chess piece
+			-- located at position `game_board[row, col]`. The
+			-- boolean `flag` is set to `false` to indicate the
+			-- use of this feature in the `require` clause
+			-- of some feature.
 
 		require
 			is_game_started:
@@ -104,16 +117,15 @@ feature -- GAME operations
 
 		local
 			chess: STRING
-
 		do
 			report := "Game In Progress..."
-			if not set then
+			if flag then
 				is_move_report := true
 			end
 			chess := game_board[row, col]
 
 			across 1 |..| 4 is i loop
-		 	  across 1 |..| 4  is j loop
+		 	 across 1 |..| 4  is j loop
 		 		if chess ~ "K" then
 		 		  if (i-row).abs <= 1 and
 		 		  	 (j-col).abs <= 1
@@ -152,8 +164,8 @@ feature -- GAME operations
 				  end
 
 		 		elseif chess ~ "P" then
-	 			  if (i = row-1)  and
-	 			  	 ((j = col-1) or (j = col+1))
+	 			  if (i-row = -1)  and
+	 			  	 ((j-col = -1) or (j-col = 1))
 	 			  then
 	 			  	moves_board[i, j] := "+"
 	 			  end
@@ -166,6 +178,9 @@ feature -- GAME operations
 
 
 	move_and_capture(r1: INTEGER; c1: INTEGER; r2: INTEGER; c2: INTEGER)
+			-- Move the chess piece located at postion
+			-- `game_board[r1, c1]` to capture the chess
+			-- piece located at position `game_board[r2, c2]`.
 
 		require
 			is_game_started:
@@ -193,10 +208,10 @@ feature -- GAME operations
 				game_board[r2, c2] /~ "."
 
 			is_valid_move:
-				moves(r1, c1, true)[r2, c2] ~ "+"
+				moves(r1, c1, false)[r2, c2] ~ "+"
 
 			is_not_blocked:
-				true
+				not is_blocked(r1, c1, r2, c2)
 
 		do
 			game_board[r2, c2] := game_board[r1, c1]
@@ -205,7 +220,44 @@ feature -- GAME operations
 		end
 
 
+feature -- GAME Queries
+
+	is_blocked(from_r: INTEGER; from_c: INTEGER; to_r: INTEGER; to_c: INTEGER): BOOLEAN
+			-- Is the chess piece at `game_board[from_r, from_c]`
+			-- blocked from moving and capturing the chess
+			-- piece at `game_board[to_r, to_c]` by some other
+			-- chess piece along the path of the move?
+
+		local
+			chess: STRING
+		do
+			chess := game_board[from_r, from_c]
+
+			if chess ~ "K" or chess ~ "P" then
+					-- King and Pawn cannot be blocked.
+				Result := false
+			else
+				across 1 |..| 4 is i loop
+				 across 1 |..| 4 is j loop
+				  if chess ~ "Q" then
+					Result := false
+				  elseif chess ~ "N" then
+					Result := false
+				  elseif chess ~ "B" then
+					Result := false
+				  elseif chess ~ "R" then
+					Result := false
+				  end
+				end
+			  end
+			end
+		end
+
+
+
 	board_to_string(board: ARRAY2[STRING]): STRING
+			-- Return a string representation of a 2D-ARRAY
+			-- board `board`.
 
 		do
 			create Result.make_empty
@@ -225,25 +277,19 @@ feature -- GAME operations
 		end
 
 
-	reset
-			-- Reset model state.
-		do
-			make
-		end
-
-feature -- queries
-
-	out : STRING
+	out: STRING
 		do
 			Result := "  # of chess pieces on game_board: "
 			Result.append(pieces_count.out)
 			Result.append("%N")
+
 			if game_started and pieces_count <= 1 then
 				report := "Game Over: You Win!"
 				game_over := true
 				game_started := false
 			end
 			Result := Result + "  " + report + "%N"
+
 			if is_move_report then
 				Result.append(board_to_string(moves_board))
 			else

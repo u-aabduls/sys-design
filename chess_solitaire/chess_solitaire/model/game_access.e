@@ -1,5 +1,5 @@
 note
-	description: "Singleton access to the default business model."
+	description: "Singleton access to GAME."
 	author: "Jackie Wang"
 	date: "$Date$"
 	revision: "$Revision$"

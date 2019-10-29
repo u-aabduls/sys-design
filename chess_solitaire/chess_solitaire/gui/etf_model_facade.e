@@ -39,7 +39,7 @@ feature -- Constructor
 			create ui.make
 	      	create input.make_without_running("dummy", ui)
 	      	create output.make
-	      	output.model.reset
+	      	output.model.reset_game
 			input.on_error.attach (agent output.log_error)
 
 			create {LINKED_LIST[STRING]} history.make
