@@ -20,8 +20,8 @@ create {GAME_ACCESS}
 
 feature -- Attributes
 
-	game_board, moves_board: ARRAY2[STRING]
-	chess_pieces: ARRAY[STRING]
+	game_board: ARRAY2[PIECE]
+	moves_board: ARRAY2[STRING]
 	pieces_count: INTEGER
 	game_started, game_over, is_move_report: BOOLEAN
 	report: STRING
@@ -32,14 +32,20 @@ feature {NONE} -- Initialization
 
 	make
 			-- Initialize `Current`.
+		local
+			piece: PIECE
 		do
-			create game_board.make_filled (".", 4, 4)
+				-- Create a default piece `piece`
+			create piece.make
+				-- Populate the game board with `piece`
+			create game_board.make_filled(piece, 4,4)
+				-- Populate the moves board
 			create moves_board.make_filled (".", 4, 4)
+				-- Initialize GAME states to ``
 			game_started := false
 			game_over := false
 			is_move_report := false
 			pieces_count := 0
-			create chess_pieces.make_from_array (<< "K", "Q", "N", "B", "R", "P" >>)
 			create error_handler.make_empty
 			report := "Game being Setup..."
 		end
@@ -84,10 +90,29 @@ feature -- Commands
 
 			slot_not_occupied:
 				not is_slot_occupied(row, col)
+		local
+			chess_piece: PIECE
 		do
 			report := "Game being Setup..."
 			pieces_count := pieces_count + 1
-			game_board[row, col] := chess_pieces[chess]
+
+			if chess = 1 then
+				create {KING} chess_piece.make
+			elseif chess = 2 then
+				create {QUEEN} chess_piece.make
+			elseif chess = 3 then
+				create {KNIGHT} chess_piece.make
+			elseif chess = 4 then
+				create {BISHOP} chess_piece.make
+			elseif chess = 5 then
+				create {ROOK} chess_piece.make
+			elseif chess = 6 then
+				create {PAWN} chess_piece.make
+			end
+
+			check attached chess_piece AS piece then
+				game_board[row, col] := chess_piece
+			end
 		end
 
 
@@ -111,72 +136,13 @@ feature -- Commands
 			slot_occupied:
 				is_slot_occupied(row, col)
 
-		local
-			chess: STRING
 		do
 			report := "Game In Progress..."
 			if flag then
 				is_move_report := true
 			end
-			chess := game_board[row, col]
-
-			across 1 |..| 4 is i loop
-		 	 across 1 |..| 4  is j loop
-
-		 	 		-- CHESS PIECE is a KING
-		 		if chess ~ "K" then
-		 		  if (i-row).abs <= 1 and
-		 		  	 (j-col).abs <= 1
-		 		  then
-		 			 moves_board[i, j] := "+"
-		 		  end
-
-		 		elseif chess ~ "Q" then
-		 			-- CHESS PIECE is a QUEEN
-				  if (row-i).abs = (col-j).abs
-		 			 or -1*(row-i) = (col-j)
-		 		   	 or (row-i) = -1*(col-j)
-		 			 or i = row
-		 			 or j = col
-		 		  then
-		 			 moves_board[i, j] := "+"
-		 		  end
-
-		 		elseif chess ~ "N" then
-		 			-- CHESS PIECE is a KNIGHT
-		 		  if (i-row).abs = 1 and (j-col).abs = 2 or
-		 			 (i-row).abs = 2 and (j-col).abs = 1
-		 	      then
-			 	    moves_board[i, j] := "+"
-		 		  end
-
-		 		elseif chess ~ "B" then
-		 			-- CHESS PIECE is a BISHOP
-		 	   	  if (row-i).abs = (col-j).abs
-		 			or -(row-i) = (col-j)
-		 			or (row-i) = -(col-j)
-		 		  then
-		 			moves_board[i, j] := "+"
-		 		  end
-
-		 		elseif chess ~ "R" then
-		 			-- CHESS PIECE is a ROOK
-				  if i = row or j = col then
-					moves_board[i, j] := "+"
-				  end
-
-		 		elseif chess ~ "P" then
-		 			-- CHESS PIECE is a PAWN
-	 			  if (i-row = -1)  and
-	 			  	 ((j-col = -1) or (j-col = 1))
-	 			  then
-	 			  	moves_board[i, j] := "+"
-	 			  end
-		 		end
-			  end
-			end
-			moves_board[row, col] := chess
-			Result := moves_board
+			moves_board := game_board[row, col].get_moves(row, col)
+			Result := moves_board.deep_twin
 		end
 
 
@@ -210,9 +176,14 @@ feature -- Commands
 			is_not_blocked:
 				not is_blocked(r1, c1, r2, c2)
 
+		local
+			chess_piece: PIECE
+
 		do
+				-- Create a default `PIECE`
+			create chess_piece.make
 			game_board[r2, c2] := game_board[r1, c1]
-			game_board[r1, c1] := "."
+			game_board[r1, c1] := chess_piece
 			pieces_count := pieces_count - 1
 		end
 
@@ -234,7 +205,7 @@ feature -- Auxiliary Queries
 			-- Is there a chess piece located at position
 			-- (row, col) on `game_board`?
 		do
-			Result := game_board[row, col] /~ "."
+			Result := game_board[row, col].type /~ "."
 		end
 
 
@@ -253,23 +224,23 @@ feature -- Auxiliary Queries
 			-- piece at `game_board[to_r, to_c]` by some other
 			-- chess piece along the path of the move?
 		local
-			chess: STRING
+			chess_piece: PIECE
 		do
-			chess := game_board[from_r, from_c]
+			chess_piece := game_board[from_r, from_c]
 
-			if chess ~ "K" or chess ~ "P" then
+			if chess_piece.type ~ "K" or chess_piece.type ~ "P" then
 					-- King and Pawn cannot be blocked.
 				Result := false
 			else
 				across 1 |..| 4 is i loop
 				 across 1 |..| 4 is j loop
-				  if chess ~ "Q" then
+				  if chess_piece.type ~ "Q" then
 					Result := false
-				  elseif chess ~ "N" then
+				  elseif chess_piece.type ~ "N" then
 					Result := false
-				  elseif chess ~ "B" then
+				  elseif chess_piece.type ~ "B" then
 					Result := false
-				  elseif chess ~ "R" then
+				  elseif chess_piece.type ~ "R" then
 					Result := false
 				  end
 				end
@@ -278,15 +249,15 @@ feature -- Auxiliary Queries
 		end
 
 
-	board_to_string(board: ARRAY2[STRING]): STRING
+	board_to_string(board: ARRAY2[ANY]): STRING
 			-- Return a string representation of a 2D-ARRAY
 			-- board `board`.
 		do
 			create Result.make_empty
 			across 1 |..| 4 is i loop
-				Result.append ("  ")
+				Result.append("  ")
 				across 1 |..| 4 is j loop
-					Result.append (board[i,j])
+					Result.append(board[i,j].out)
 				end
 				if i < 4 then
 					Result.append("%N")

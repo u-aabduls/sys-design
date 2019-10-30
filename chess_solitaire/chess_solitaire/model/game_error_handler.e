@@ -1,5 +1,5 @@
 note
-	description: "Summary description for {GAME_ERROR_HANDLER}."
+	description: "An error handler class for the CHESS SOLITAIRE game."
 	author: "Umar Abdulselam"
 	date: "$Date$"
 	revision: "$Revision$"
@@ -25,7 +25,7 @@ feature -- Initialization
 			create error.make_empty
 			error_flagged := false
 		end
-		
+
 
 feature -- Commands
 

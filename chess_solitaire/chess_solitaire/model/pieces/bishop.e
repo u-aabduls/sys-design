@@ -1,0 +1,53 @@
+note
+	description: "Summary description for {BISHOP}."
+	author: ""
+	date: "$Date$"
+	revision: "$Revision$"
+
+class
+	BISHOP
+
+inherit
+	PIECE
+		redefine
+			make,
+			get_moves
+		end
+
+create
+
+	make
+
+feature
+
+	make
+			-- Initialize a BISHOP object: "B"
+		do
+			create type.make_from_string ("B")
+		end
+
+feature -- Queries
+
+	get_moves(row: INTEGER; col: INTEGER): ARRAY2[STRING]
+			-- Return a 2D-Array of possible moves
+			-- for `BISHOP` chess piece.
+		local
+			possible_moves: ARRAY2[STRING]
+		do
+			create possible_moves.make_filled (".", 4, 4)
+
+			across 1 |..| 4 is i loop
+			 across 1 |..| 4  is j loop
+			 	if (row-i).abs = (col-j).abs
+		 		   or -(row-i) = (col-j)
+		 		   or (row-i) = -(col-j)
+		 		then
+		 			possible_moves[i, j] := "+"
+		 		end
+			 end
+			end
+			possible_moves[row, col] := Current.type
+			Result := possible_moves
+		end
+
+end
