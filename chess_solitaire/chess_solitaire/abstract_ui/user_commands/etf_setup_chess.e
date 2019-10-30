@@ -16,7 +16,23 @@ feature -- command
 			setup_chess_precond(c, row, col)
     	do
 			-- perform some update on the model state
-			model.setup_chess(c, row, col)
+			if model.game_started then
+				model.error_handler.set_error (
+					"Error: Game already started")
+
+			elseif not model.is_valid_slot(row, col) then
+				model.error_handler.set_error (
+					"Error: (" + row.out + ", " + col.out + ") not a valid slot")
+
+			elseif model.is_slot_occupied(row, col) then
+				model.error_handler.set_error (
+					"Error: Slot @ (" + row.out + ", " + col.out + ") already occupied")
+
+			else
+				model.setup_chess(c, row, col)
+
+			end
+
 			etf_cmd_container.on_change.notify ([Current])
     	end
 
