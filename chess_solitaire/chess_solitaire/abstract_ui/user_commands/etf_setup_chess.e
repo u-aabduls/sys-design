@@ -15,7 +15,8 @@ feature -- command
 		require else
 			setup_chess_precond(c, row, col)
     	do
-			-- perform some update on the model state
+				-- perform some update on the model state
+				
 			if model.game_started then
 				model.error_handler.set_error (
 					"Error: Game already started")

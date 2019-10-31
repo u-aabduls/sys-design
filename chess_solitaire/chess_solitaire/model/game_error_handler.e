@@ -26,7 +26,6 @@ feature -- Initialization
 			error_flagged := false
 		end
 
-
 feature -- Commands
 
 	set_error(e: STRING)
@@ -36,7 +35,6 @@ feature -- Commands
 			error := e
 			error_flagged := true
 		end
-
 
 feature -- Queries
 

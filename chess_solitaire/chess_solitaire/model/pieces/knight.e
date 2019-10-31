@@ -9,10 +9,11 @@ class
 
 inherit
 	PIECE
-		redefine
-			make,
-			get_moves
-		end
+	  redefine
+		make,
+		get_moves,
+		is_blocked
+	  end
 
 create
 
@@ -47,6 +48,38 @@ feature -- Queries
 			end
 			possible_moves[row, col] := Current.type
 			Result := possible_moves
+		end
+
+
+	is_blocked(from_r: INTEGER; from_c: INTEGER; to_r: INTEGER; to_c: INTEGER; game_board: ARRAY2[PIECE]): BOOLEAN
+			-- Refer to Precursor class for feature definition
+		do
+			Result := false
+				-- Moving up 1, right 2
+			if diff(to_r, from_r)=1 and diff(to_c, from_c)=2 then
+				Result :=  game_board[from_r+1, from_c].type /~ "."
+						or game_board[from_r+1, from_c+1].type /~ "."
+				-- Moving down 1, right 2
+			elseif diff(to_r, from_r)=-1 and diff(to_c, from_c)=2 then
+				Result :=  game_board[from_r-1, from_c].type /~ "."
+						or game_board[from_r-1, from_c+1].type /~ "."
+				-- Moving up 1, left 2
+			elseif diff(to_r, from_r)=1 and diff(to_c, from_c)=-2 then
+				Result :=  game_board[from_r+1, from_c].type /~ "."
+						or game_board[from_r+1, from_c-1].type /~ "."
+				-- Moving down 1, left 2
+			elseif diff(to_r, from_r)=-1 and diff(to_c, from_c)=-2 then
+				Result :=  game_board[from_r-1, from_c].type /~ "."
+						or game_board[from_r-1, from_c-1].type /~ "."
+				-- Moving up 2
+			elseif diff(to_r, from_r)=2 then
+				Result :=  game_board[from_r+1, from_c].type /~ "."
+						or game_board[from_r+2, from_c].type /~ "."
+				-- Moving down 2
+			elseif diff(to_r, from_r)=-2 then
+				Result :=  game_board[from_r-1, from_c].type /~ "."
+						or game_board[from_r-2, from_c].type /~ "."
+			end
 		end
 
 end

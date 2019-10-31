@@ -31,7 +31,8 @@ feature -- Attributes
 feature {NONE} -- Initialization
 
 	make
-			-- Initialize `Current`.
+			-- Initialize `GAME`.
+
 		local
 			piece: PIECE
 		do
@@ -41,12 +42,13 @@ feature {NONE} -- Initialization
 			create game_board.make_filled(piece, 4,4)
 				-- Populate the moves board
 			create moves_board.make_filled (".", 4, 4)
-				-- Initialize GAME states to ``
+				-- Initialize GAME state to `default`
 			game_started := false
 			game_over := false
 			is_move_report := false
 			pieces_count := 0
 			create error_handler.make_empty
+				-- Set initial report message
 			report := "Game being Setup..."
 		end
 
@@ -90,29 +92,39 @@ feature -- Commands
 
 			slot_not_occupied:
 				not is_slot_occupied(row, col)
+
 		local
+			type: STRING
 			chess_piece: PIECE
+			mapped_pieces: HASH_TABLE[STRING, INTEGER]
+
 		do
 			report := "Game being Setup..."
-			pieces_count := pieces_count + 1
 
-			if chess = 1 then
+				-- Map integers to CHESS PIECES
+			mapped_pieces := integer_to_chess
+				-- Get the PIECE type from `chess`
+			type := mapped_pieces.at(chess)
+
+			if type ~ "K" then
 				create {KING} chess_piece.make
-			elseif chess = 2 then
+			elseif type ~ "Q" then
 				create {QUEEN} chess_piece.make
-			elseif chess = 3 then
+			elseif type ~ "N" then
 				create {KNIGHT} chess_piece.make
-			elseif chess = 4 then
+			elseif type ~ "B" then
 				create {BISHOP} chess_piece.make
-			elseif chess = 5 then
+			elseif type ~ "R" then
 				create {ROOK} chess_piece.make
-			elseif chess = 6 then
+			elseif type ~ "P" then
 				create {PAWN} chess_piece.make
 			end
 
 			check attached chess_piece AS piece then
-				game_board[row, col] := chess_piece
+				game_board[row, col] := piece
 			end
+				-- Increment the total number of pieces
+			pieces_count := pieces_count + 1
 		end
 
 
@@ -183,12 +195,14 @@ feature -- Commands
 				-- Create a default `PIECE`
 			create chess_piece.make
 			game_board[r2, c2] := game_board[r1, c1]
+				-- Set `game_board[r1, c1]` to "."
+				-- (i.e. the default `PIECE`
 			game_board[r1, c1] := chess_piece
 			pieces_count := pieces_count - 1
 		end
 
 
-feature -- Auxiliary Queries
+feature -- Queries
 
 	is_valid_slot(row: INTEGER; col: INTEGER): BOOLEAN
 			-- Is the coordinate `(row,col)` a valid
@@ -223,33 +237,67 @@ feature -- Auxiliary Queries
 			-- blocked from moving and capturing the chess
 			-- piece at `game_board[to_r, to_c]` by some other
 			-- chess piece along the path of the move?
-		local
-			chess_piece: PIECE
-		do
-			chess_piece := game_board[from_r, from_c]
 
-			if chess_piece.type ~ "K" or chess_piece.type ~ "P" then
-					-- King and Pawn cannot be blocked.
-				Result := false
-			else
-				across 1 |..| 4 is i loop
-				 across 1 |..| 4 is j loop
-				  if chess_piece.type ~ "Q" then
-					Result := false
-				  elseif chess_piece.type ~ "N" then
-					Result := false
-				  elseif chess_piece.type ~ "B" then
-					Result := false
-				  elseif chess_piece.type ~ "R" then
-					Result := false
-				  end
-				end
-			  end
+		local
+			piece: PIECE
+		do
+			piece := game_board[from_r, from_c]
+			Result := piece.is_blocked(from_r, from_c,to_r, to_c, game_board.deep_twin)
+		end
+
+
+	valid_move_exists: BOOLEAN
+			-- Does there exist any remaining possible moves?
+			-- if `Result = false`, the game is over and the player has lost.
+		local
+			possible_moves: ARRAY2[STRING]
+		do
+			Result := false
+				-- Iterate `game_board` and get the
+				-- possible moves for each `PIECE` on
+				-- the board
+			across 1 |..| 4 is row loop
+			 across 1 |..| 4  is col loop
+			   if game_board[row,col].type /~ "." then
+			     possible_moves := game_board[row, col].get_moves(row, col)
+			       		-- Iterate the possible moves for the
+			       		-- identified `PIECE` and check if there
+			       		-- exists another `PIECE` located at any
+			       		-- of the valid move coordinates
+				   across 1 |..| 4 is i loop
+			 		across 1 |..| 4  is j loop
+			 		  if    possible_moves[i,j] ~ "+"
+			 		  	and is_slot_occupied(i, j) then
+			 		  	  Result := true
+			 		  end
+			 		end
+				   end
+			   end
+			 end
 			end
 		end
 
 
-	board_to_string(board: ARRAY2[ANY]): STRING
+feature -- Auxiliary Features
+
+	integer_to_chess: HASH_TABLE[STRING, INTEGER]
+			-- Return a `HASH_TABLE` containing a mapping
+			-- of the `PIECE` types to integers.
+		local
+			table: HASH_TABLE[STRING, INTEGER]
+		do
+			create table.make(0)
+			table.extend("K", 1)
+			table.extend("Q", 2)
+			table.extend("N", 3)
+			table.extend("B", 4)
+			table.extend("R", 5)
+			table.extend("P", 6)
+			Result := table
+		end
+
+
+	board_out(board: ARRAY2[ANY]): STRING
 			-- Return a string representation of a 2D-ARRAY
 			-- board `board`.
 		do
@@ -278,23 +326,35 @@ feature -- Auxiliary Queries
 				report := error_handler.get_error.deep_twin
 				error_handler.make_empty
 
-				-- Game is Won if:
-			elseif game_started and pieces_count <= 1 then
+				-- Game is lost if:
+			elseif game_started and pieces_count = 0 then
+				report := "Game Over: You Lose!"
+				game_over := true
+
+				-- Game is won if:
+			elseif game_started and pieces_count = 1 then
 				report := "Game Over: You Win!"
+				game_over := true
+
+				-- Game is lost if:
+			elseif  game_started
+				and not valid_move_exists then
+				report := "Game Over: You Lose!"
 				game_over := true
 
 			end
 
-			Result := Result + "  " + report + "%N"
+				-- Append the `report` state
+			Result.append ("  " + report + "%N")
 
 			if is_move_report then
-				Result.append(board_to_string(moves_board))
+				Result.append(board_out(moves_board))
 			else
-				Result.append(board_to_string(game_board))
+				Result.append(board_out(game_board))
 			end
 
-				-- Reset `moves_board` after reporting the
-				-- sate of the GAME.
+				-- Reset `moves_board` state after
+				-- reporting the sate of the GAME.
 			moves_board.make_filled (".", 4, 4)
 			is_move_report := false
 		end

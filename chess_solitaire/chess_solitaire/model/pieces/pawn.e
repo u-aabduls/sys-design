@@ -9,10 +9,13 @@ class
 
 inherit
 	PIECE
-		redefine
-			make,
-			get_moves
-		end
+	  redefine
+		make,
+		get_moves
+		  -- PAWN does not redefine feature
+		  -- `is_blocked` since it cannot be
+		  -- blocked from making any move.
+	  end
 
 create
 

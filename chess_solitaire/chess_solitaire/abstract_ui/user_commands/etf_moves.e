@@ -15,7 +15,8 @@ feature -- command
 		local
 			dormant: ARRAY2[STRING]
     	do
-			-- perform some update on the model state
+				-- perform some update on the model state
+
 			if not model.game_started then
 				model.error_handler.set_error(
 					"Error: Game not yet started")
@@ -26,12 +27,13 @@ feature -- command
 
 			elseif not model.is_valid_slot(row, col) then
 				model.error_handler.set_error (
-					"Error: (" + row.out + ", " + col.out + ") not a valid slot")
+					"Error: (" + row.out + ", " + col.out
+					 + ") not a valid slot")
 
 			elseif not model.is_slot_occupied(row, col) then
 				model.error_handler.set_error (
-					"Error: Slot @ (" + row.out + ", " + col.out + ") not occupied")
-
+					"Error: Slot @ (" + row.out + ", " + col.out
+					 + ") not occupied")
 			else
 				dormant := model.moves(row, col, true)
 
