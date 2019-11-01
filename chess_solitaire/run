@@ -1,0 +1,17 @@
+#!/bin/bash
+
+EIFGENs/chess_solitaire/W_code/chess_solitaire -b tests/acceptance/instructor/at01.txt > tests/acceptance/instructor/at01.actual.txt
+
+EIFGENs/chess_solitaire/W_code/chess_solitaire -b tests/acceptance/instructor/at02.txt > tests/acceptance/instructor/at02.actual.txt
+
+EIFGENs/chess_solitaire/W_code/chess_solitaire -b tests/acceptance/instructor/at03.txt > tests/acceptance/instructor/at03.actual.txt
+
+EIFGENs/chess_solitaire/W_code/chess_solitaire -b tests/acceptance/instructor/at04.txt > tests/acceptance/instructor/at04.actual.txt
+
+EIFGENs/chess_solitaire/W_code/chess_solitaire -b tests/acceptance/instructor/at05.txt > tests/acceptance/instructor/at05.actual.txt
+
+EIFGENs/chess_solitaire/W_code/chess_solitaire -b tests/acceptance/instructor/at06.txt > tests/acceptance/instructor/at06.actual.txt
+
+EIFGENs/chess_solitaire/W_code/chess_solitaire -b tests/acceptance/instructor/at07.txt > tests/acceptance/instructor/at07.actual.txt
+
+EIFGENs/chess_solitaire/W_code/chess_solitaire -b tests/acceptance/instructor/at08.txt > tests/acceptance/instructor/at08.actual.txt

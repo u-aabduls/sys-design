@@ -47,7 +47,7 @@ feature {NONE} -- Initialization
 			game_over := false
 			is_move_report := false
 			pieces_count := 0
-			create error_handler.make_empty
+			create error_handler.make_default
 				-- Set initial report message
 			report := "Game being Setup..."
 		end
@@ -65,6 +65,13 @@ feature -- Commands
 		do
 			report := "Game In Progress..."
 			game_started := true
+
+		ensure
+			game_set_started:
+				game_started
+
+			report_properly_set:
+				report ~ "Game In Progress..."
 		end
 
 
@@ -76,6 +83,34 @@ feature -- Commands
 				game_started
 		do
 			make
+
+		ensure
+			game_board_reset:
+			  across 1 |..| 4 is row all
+			    across 1 |..| 4 is col all
+				  game_board[row, col].get_type ~ "."
+			    end
+			  end
+
+			moves_board_reset:
+			  across 1 |..| 4 is row all
+			    across 1 |..| 4 is col all
+				  moves_board[row, col] ~ "."
+			    end
+			  end
+
+			 piece_count_reset:
+			 	pieces_count = 0
+
+			 default_game_state:
+			 	    game_started = false
+				and	game_over = false
+				and is_move_report = false
+
+			 default_error_state:
+			 	    (not error_handler.is_set)
+			 	and error_handler.get_error ~ ""
+
 		end
 
 
@@ -125,15 +160,32 @@ feature -- Commands
 			end
 				-- Increment the total number of pieces
 			pieces_count := pieces_count + 1
+
+		ensure
+			report_set:
+				report ~ "Game being Setup..."
+
+			piece_count_incremented:
+				pieces_count = old pieces_count + 1
+
+			chess_piece_set:
+				not game_board[row, col].is_same((old game_board.deep_twin)[row, col])
+
+			other_slots_unchanged:
+				across 1 |..| 4 is i all
+			      across 1 |..| 4 is j all
+			      	((row /= i) and (col /= j)) implies
+				      game_board[i, j].is_same((old game_board.deep_twin)[i, j])
+			      end
+			    end
 		end
 
 
 	moves(row: INTEGER; col: INTEGER; flag: BOOLEAN): ARRAY2[STRING]
 			-- Display the possible moves for the chess piece
 			-- located at position `game_board[row, col]`. The
-			-- boolean `flag` is set to `false` to indicate the
-			-- use of this feature in the `require` clause
-			-- of some feature.
+			-- boolean `flag` is set to `true` to indicate the
+			-- use of this feature from a client of `Current`.
 
 		require
 			is_game_started:
@@ -155,13 +207,21 @@ feature -- Commands
 			end
 			moves_board := game_board[row, col].get_moves(row, col)
 			Result := moves_board.deep_twin
+
+		ensure
+			report_set:
+				report ~ "Game In Progress..."
+
+			move_report_set:
+				flag implies is_move_report
+
 		end
 
 
-	move_and_capture(r1: INTEGER; c1: INTEGER; r2: INTEGER; c2: INTEGER)
+	move_and_capture(from_r: INTEGER; from_c: INTEGER; to_r: INTEGER; to_c: INTEGER)
 			-- Move the chess piece located at postion
-			-- `game_board[r1, c1]` to capture the chess
-			-- piece located at position `game_board[r2, c2]`.
+			-- `game_board[from_r, from_c]` to capture the chess
+			-- piece located at position `game_board[to_r, to_r]`.
 
 		require
 			is_game_started:
@@ -171,22 +231,22 @@ feature -- Commands
 				not game_over
 
 			slot_1_valid:
-				is_valid_slot(r1, c1)
+				is_valid_slot(from_r, from_c)
 
 			slot_2_valid:
-				is_valid_slot(r2, c2)
+				is_valid_slot(to_r, to_c)
 
 			slot_1_occupied:
-				is_slot_occupied(r1, c1)
+				is_slot_occupied(from_r, from_c)
 
 			slot_2_occupied:
-				is_slot_occupied(r2, c2)
+				is_slot_occupied(to_r, to_c)
 
 			is_possible_move:
-				is_possible_move(r1, c1, r2, c2)
+				is_possible_move(from_r, from_c, to_r, to_c)
 
 			is_not_blocked:
-				not is_blocked(r1, c1, r2, c2)
+				not is_blocked(from_r, from_c, to_r, to_c)
 
 		local
 			chess_piece: PIECE
@@ -194,11 +254,27 @@ feature -- Commands
 		do
 				-- Create a default `PIECE`
 			create chess_piece.make
-			game_board[r2, c2] := game_board[r1, c1]
-				-- Set `game_board[r1, c1]` to "."
+			game_board[to_r, to_c] := game_board[from_r, from_c]
+				-- Set `game_board[from_r, from_c]` to "."
 				-- (i.e. the default `PIECE`
-			game_board[r1, c1] := chess_piece
+			game_board[from_r, from_c] := chess_piece
 			pieces_count := pieces_count - 1
+
+		ensure
+			piece_count_decremented:
+				pieces_count = old pieces_count - 1
+
+			piece_moved:
+					game_board[to_r, to_c].is_same((old game_board.deep_twin)[from_r, from_c])
+				and game_board[from_r, from_c].get_type ~ "."
+
+			other_slots_unchanged:
+				across 1 |..| 4 is i all
+			      across 1 |..| 4 is j all
+				    ((i /= from_r) and (j /= from_c)) and ((i /= to_r) and (j /= to_c)) implies
+				    game_board[i, j].is_same((old game_board.deep_twin)[i, j])
+			      end
+			    end
 		end
 
 
@@ -219,7 +295,7 @@ feature -- Queries
 			-- Is there a chess piece located at position
 			-- (row, col) on `game_board`?
 		do
-			Result := game_board[row, col].type /~ "."
+			Result := game_board[row, col].get_type /~ "."
 		end
 
 
@@ -258,7 +334,7 @@ feature -- Queries
 				-- the board
 			across 1 |..| 4 is row loop
 			 across 1 |..| 4  is col loop
-			   if game_board[row,col].type /~ "." then
+			   if is_slot_occupied(row, col) then
 			     possible_moves := game_board[row, col].get_moves(row, col)
 			       		-- Iterate the possible moves for the
 			       		-- identified `PIECE` and check if there
@@ -267,7 +343,8 @@ feature -- Queries
 				   across 1 |..| 4 is i loop
 			 		across 1 |..| 4  is j loop
 			 		  if    possible_moves[i,j] ~ "+"
-			 		  	and is_slot_occupied(i, j) then
+			 		  	and is_slot_occupied(i, j)
+			 		  	and not is_blocked(row, col, i, j) then
 			 		  	  Result := true
 			 		  end
 			 		end
@@ -324,7 +401,7 @@ feature -- Auxiliary Features
 				-- Report the error if:
 			if error_handler.is_set then
 				report := error_handler.get_error.deep_twin
-				error_handler.make_empty
+				error_handler.make_default
 
 				-- Game is lost if:
 			elseif game_started and pieces_count = 0 then
@@ -358,6 +435,34 @@ feature -- Auxiliary Features
 			moves_board.make_filled (".", 4, 4)
 			is_move_report := false
 		end
+
+
+invariant
+
+	valid_piece_count:
+		pieces_count >= 0 and pieces_count <= 16
+
+	valid_pieces:
+		across 1 |..| 4 is row all
+		  across 1 |..| 4 is col all
+		  	   attached {PIECE} game_board[row, col]
+		  end
+		end
+
+	valid_moves_map:
+		across 1 |..| 4 is row all
+		  across 1 |..| 4 is col all
+		  	   moves_board[row, col] ~ "+"
+		  	or moves_board[row, col] ~ "."
+		  	or moves_board[row, col] ~ "K"
+		  	or moves_board[row, col] ~ "Q"
+		  	or moves_board[row, col] ~ "N"
+		  	or moves_board[row, col] ~ "B"
+		  	or moves_board[row, col] ~ "R"
+		  	or moves_board[row, col] ~ "P"
+		  end
+		end
+
 end
 
 

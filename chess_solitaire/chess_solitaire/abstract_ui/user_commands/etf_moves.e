@@ -18,22 +18,16 @@ feature -- command
 				-- perform some update on the model state
 
 			if not model.game_started then
-				model.error_handler.set_error(
-					"Error: Game not yet started")
+				model.error_handler.set_error_game_not_started
 
 			elseif model.game_over then
-				model.error_handler.set_error(
-					"Error: Game already over")
+				model.error_handler.set_error_game_already_over
 
 			elseif not model.is_valid_slot(row, col) then
-				model.error_handler.set_error (
-					"Error: (" + row.out + ", " + col.out
-					 + ") not a valid slot")
+				model.error_handler.set_error_invalid_slot(row, col)
 
 			elseif not model.is_slot_occupied(row, col) then
-				model.error_handler.set_error (
-					"Error: Slot @ (" + row.out + ", " + col.out
-					 + ") not occupied")
+				model.error_handler.set_error_slot_not_occupied(row, col)
 			else
 				dormant := model.moves(row, col, true)
 

@@ -16,38 +16,25 @@ feature -- command
 				-- perform some update on the model state
 
 			if not model.game_started then
-				model.error_handler.set_error(
-					"Error: Game not yet started")
+				model.error_handler.set_error_game_not_started
 
 			elseif model.game_over then
-				model.error_handler.set_error(
-					"Error: Game already over")
+				model.error_handler.set_error_game_already_over
 
 			elseif not model.is_valid_slot(r1, c1) then
-				model.error_handler.set_error(
-					"Error: (" + r1.out + ", " + c1.out
-					+ ") not a valid slot")
+				model.error_handler.set_error_invalid_slot(r1, c1)
 
 			elseif not model.is_valid_slot(r2, c2) then
-				model.error_handler.set_error(
-					"Error: (" + r2.out + ", " + c2.out
-					 + ") not a valid slot")
+				model.error_handler.set_error_invalid_slot(r2, c2)
 
 			elseif not model.is_slot_occupied(r1, c1) then
-				model.error_handler.set_error(
-					"Error: Slot @ (" + r1.out + ", " + c1.out
-					 + ") not occupied")
+				model.error_handler.set_error_slot_not_occupied(r1, c1)
 
 			elseif not model.is_slot_occupied(r2, c2) then
-				model.error_handler.set_error(
-					"Error: Slot @ (" + r2.out + ", " + c2.out
-					 + ") not occupied")
+				model.error_handler.set_error_slot_not_occupied(r2, c2)
 
 			elseif not model.is_possible_move(r1, c1, r2, c2) then
-				model.error_handler.set_error(
-					"Error: Invalid move of " + model.game_board[r1, c1].type
-					 + " from (" + r1.out + ", " + c1.out + ") to ("
-					 + r2.out + ", " + c2.out + ")")
+				model.error_handler.set_error_move_not_possible(r1, c1, r2, c2)
 
 			elseif model.is_blocked(r1, c1, r2, c2) then
 				model.error_handler.set_error(

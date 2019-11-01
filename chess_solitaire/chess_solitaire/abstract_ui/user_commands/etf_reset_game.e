@@ -16,7 +16,7 @@ feature -- command
 				-- perform some update on the model state
 
 			if not model.game_started then
-				model.error_handler.set_error ("Error: Game not yet started")
+				model.error_handler.set_error_game_not_started
 			else
 				model.reset_game
 			end

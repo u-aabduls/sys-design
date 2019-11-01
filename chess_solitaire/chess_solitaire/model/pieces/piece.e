@@ -35,6 +35,18 @@ feature -- Attributes
 
 feature -- Queries
 
+	get_type: STRING
+			-- Return the type of `Current`
+		do
+			Result := type
+		end
+
+	is_same(other: PIECE): BOOLEAN
+			-- Is `other` the same type as Current?
+		do
+			Result := Current.get_type ~ other.get_type
+		end
+
 	get_moves(row: INTEGER; col: INTEGER): ARRAY2[STRING]
 			-- Return a 2D-Array of possible moves
 			-- for `Current` chess piece. NOTE:
