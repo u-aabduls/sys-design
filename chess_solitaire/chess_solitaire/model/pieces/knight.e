@@ -1,6 +1,6 @@
 note
 	description: "Summary description for {KNIGHT}."
-	author: ""
+	author: "Umar Abdulselam"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -19,7 +19,7 @@ create
 
 	make
 
-feature
+feature -- Initialization
 
 	make
 			-- Initialize a KNIGHT object: "N"

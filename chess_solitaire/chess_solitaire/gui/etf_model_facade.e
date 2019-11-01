@@ -34,7 +34,7 @@ feature -- Constructor
 		local
 			model_access: GAME_ACCESS
 		do
-			model := model_access.m
+			model := model_access.game
 			create sys.make
 			create ui.make
 	      	create input.make_without_running("dummy", ui)

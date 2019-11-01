@@ -15,21 +15,21 @@ feature -- command
 		local
 			dormant: ARRAY2[STRING]
     	do
-				-- perform some update on the model state
+				-- perform some update on the GAME state
 
-			if not model.game_started then
-				model.error_handler.set_error_game_not_started
+			if not game.game_started then
+				game.error_handler.set_error_game_not_started
 
-			elseif model.game_over then
-				model.error_handler.set_error_game_already_over
+			elseif game.game_over then
+				game.error_handler.set_error_game_already_over
 
-			elseif not model.is_valid_slot(row, col) then
-				model.error_handler.set_error_invalid_slot(row, col)
+			elseif not game.is_valid_slot(row, col) then
+				game.error_handler.set_error_invalid_slot(row, col)
 
-			elseif not model.is_slot_occupied(row, col) then
-				model.error_handler.set_error_slot_not_occupied(row, col)
+			elseif not game.is_slot_occupied(row, col) then
+				game.error_handler.set_error_slot_not_occupied(row, col)
 			else
-				dormant := model.moves(row, col, true)
+				dormant := game.moves(row, col, true)
 
 			end
 

@@ -13,12 +13,12 @@ create
 feature -- command
 	start_game
     	do
-			-- perform some update on the model state
+			-- perform some update on the GAME state
 
-			if model.game_started then
-				model.error_handler.set_error_game_started
+			if game.game_started then
+				game.error_handler.set_error_game_started
 			else
-				model.start_game
+				game.start_game
 			end
 
 			etf_cmd_container.on_change.notify ([Current])

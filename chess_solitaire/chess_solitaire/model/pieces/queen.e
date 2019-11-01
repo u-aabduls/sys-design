@@ -1,6 +1,6 @@
 note
 	description: "Summary description for {QUEEN}."
-	author: ""
+	author: "Umar Abdulselam"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -19,7 +19,7 @@ create
 
 	make
 
-feature
+feature -- Initialization
 
 	make
 			-- Initialize a QUEEN object: "Q".
@@ -79,7 +79,7 @@ feature -- Queries
 				-- that location `(row, col)` to `(to_r, to_c)`. If the
 				-- sum of the two distances is equal to the distance between
 				-- `(from_r, from_c)` and `(to_r, to_c)`, the piece at
-				-- `game_board[row, col]` is blocking.
+				-- `game_board[row, col]` is blocking the move.
 
 				-- NOTE: If the piece is identified on either `(from_r, from_c)`
 				-- or `(to_r, to_c)`, ignore it.

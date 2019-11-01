@@ -1,6 +1,6 @@
 note
 	description: "Summary description for {PAWN}."
-	author: ""
+	author: "Umar Abdulselam"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -21,7 +21,7 @@ create
 
 	make
 
-feature
+feature -- Initialization
 
 	make
 			-- Initialize a PAWN object: "P"
@@ -42,7 +42,7 @@ feature -- Queries
 			across 1 |..| 4 is i loop
 			 across 1 |..| 4  is j loop
 			 	if (i-row = -1)  and
-	 			  	 ((j-col = -1) or (j-col = 1))
+	 			   ((j-col = -1) or (j-col = 1))
 	 			then
 	 			  	possible_moves[i, j] := "+"
 	 			end

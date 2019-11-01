@@ -9,7 +9,7 @@ class
 
 create
 
-	make_default
+	init
 
 feature {NONE} -- Attributes
 
@@ -19,7 +19,7 @@ feature {NONE} -- Attributes
 
 feature -- Initialization
 
-	make_default
+	init
 			-- Initialize the error handler to
 			-- empty and `error_flagged` to false.
 		local
@@ -27,7 +27,7 @@ feature -- Initialization
 		do
 			create error.make_empty
 			error_flagged := false
-			game := game_access.m
+			game := game_access.game
 		end
 
 
@@ -92,7 +92,8 @@ feature -- Commands
 	set_error_slot_occupied(row: INTEGER; col: INTEGER)
 			-- Set the `slot_not_occupied` error.
 		do
-			error := "Error: Slot @ (" + row.out + ", " + col.out + ") already occupied"
+			error := "Error: Slot @ (" + row.out
+					 + ", " + col.out + ") already occupied"
 			error_flagged := true
 		end
 

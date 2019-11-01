@@ -21,7 +21,7 @@ create
 
 	make
 
-feature -- Initialize
+feature -- Initialization
 
 	make
 			-- Initialize a default PIECE object: "."

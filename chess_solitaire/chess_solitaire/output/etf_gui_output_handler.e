@@ -25,7 +25,7 @@ feature {NONE} -- Initialization
 	do
 		Precursor
 		-- may also override the string 'initial_state'
-		model := m_access.m
+		model := m_access.game
 	end
 
 feature -- Queries

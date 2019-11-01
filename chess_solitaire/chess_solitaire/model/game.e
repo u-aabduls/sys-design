@@ -40,14 +40,15 @@ feature {NONE} -- Initialization
 			create piece.make
 				-- Populate the game board with `piece`
 			create game_board.make_filled(piece, 4,4)
-				-- Populate the moves board
+				-- Initialize the moves board to blank
 			create moves_board.make_filled (".", 4, 4)
 				-- Initialize GAME state to `default`
 			game_started := false
 			game_over := false
 			is_move_report := false
 			pieces_count := 0
-			create error_handler.make_default
+				-- Initialize `error_handler` to `default`
+			create error_handler.init
 				-- Set initial report message
 			report := "Game being Setup..."
 		end
@@ -401,7 +402,7 @@ feature -- Auxiliary Features
 				-- Report the error if:
 			if error_handler.is_set then
 				report := error_handler.get_error.deep_twin
-				error_handler.make_default
+				error_handler.init
 
 				-- Game is lost if:
 			elseif game_started and pieces_count = 0 then

@@ -15,19 +15,19 @@ feature -- command
 		require else
 			setup_chess_precond(c, row, col)
     	do
-				-- perform some update on the model state
+				-- perform some update on the GAME state
 
-			if model.game_started then
-				model.error_handler.set_error_game_started
+			if game.game_started then
+				game.error_handler.set_error_game_started
 
-			elseif not model.is_valid_slot(row, col) then
-				model.error_handler.set_error_invalid_slot(row, col)
+			elseif not game.is_valid_slot(row, col) then
+				game.error_handler.set_error_invalid_slot(row, col)
 
-			elseif model.is_slot_occupied(row, col) then
-				model.error_handler.set_error_slot_occupied(row, col)
+			elseif game.is_slot_occupied(row, col) then
+				game.error_handler.set_error_slot_occupied(row, col)
 
 			else
-				model.setup_chess(c, row, col)
+				game.setup_chess(c, row, col)
 			end
 
 			etf_cmd_container.on_change.notify ([Current])

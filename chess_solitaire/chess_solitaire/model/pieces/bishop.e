@@ -1,6 +1,6 @@
 note
 	description: "Summary description for {BISHOP}."
-	author: ""
+	author: "Umar Abdulselam"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -19,7 +19,7 @@ create
 
 	make
 
-feature
+feature -- Initialization
 
 	make
 			-- Initialize a BISHOP object: "B"

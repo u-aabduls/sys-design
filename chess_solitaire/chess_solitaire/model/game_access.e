@@ -8,13 +8,13 @@ expanded class
 	GAME_ACCESS
 
 feature
-	m: GAME
+	game: GAME
 		once
 			create Result.make
 		end
 
 invariant
-	m = m
+	game = game
 end
 
 

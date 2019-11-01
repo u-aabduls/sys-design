@@ -19,7 +19,7 @@ create
 
 	make
 
-feature
+feature -- Initializaton
 
 	make
 			-- Initialize a ROOK object: "R"

@@ -1,6 +1,6 @@
 note
 	description: "Summary description for {KING}."
-	author: ""
+	author: "Umar Abdulselam"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -21,7 +21,7 @@ create
 
 	make
 
-feature -- Initialize
+feature -- Initialization
 
 	make
 			-- Initialize a KING object: "K"
