@@ -17,17 +17,17 @@ feature -- command
     	do
 				-- perform some update on the GAME state
 
-			if not game.game_started then
-				game.error_handler.set_error_game_not_started
+			if game.game_started_state = false then
+				game.get_error_handler.set_error_game_not_started
 
-			elseif game.game_over then
-				game.error_handler.set_error_game_already_over
+			elseif game.game_over_state = true then
+				game.get_error_handler.set_error_game_already_over
 
 			elseif not game.is_valid_slot(row, col) then
-				game.error_handler.set_error_invalid_slot(row, col)
+				game.get_error_handler.set_error_invalid_slot(row, col)
 
 			elseif not game.is_slot_occupied(row, col) then
-				game.error_handler.set_error_slot_not_occupied(row, col)
+				game.get_error_handler.set_error_slot_not_occupied(row, col)
 			else
 				dormant := game.moves(row, col, true)
 

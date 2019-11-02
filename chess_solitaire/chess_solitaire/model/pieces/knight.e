@@ -46,7 +46,7 @@ feature -- Queries
 		 		end
 			 end
 			end
-			possible_moves[row, col] := Current.type
+			possible_moves[row, col] := Current.get_type
 			Result := possible_moves
 		end
 
@@ -57,28 +57,28 @@ feature -- Queries
 			Result := false
 				-- Moving up 1, right 2
 			if diff(to_r, from_r)=1 and diff(to_c, from_c)=2 then
-				Result :=  game_board[from_r+1, from_c].type /~ "."
-						or game_board[from_r+1, from_c+1].type /~ "."
+				Result :=  game_board[from_r+1, from_c].get_type /~ "."
+						or game_board[from_r+1, from_c+1].get_type /~ "."
 				-- Moving down 1, right 2
 			elseif diff(to_r, from_r)=-1 and diff(to_c, from_c)=2 then
-				Result :=  game_board[from_r-1, from_c].type /~ "."
-						or game_board[from_r-1, from_c+1].type /~ "."
+				Result :=  game_board[from_r-1, from_c].get_type /~ "."
+						or game_board[from_r-1, from_c+1].get_type /~ "."
 				-- Moving up 1, left 2
 			elseif diff(to_r, from_r)=1 and diff(to_c, from_c)=-2 then
-				Result :=  game_board[from_r+1, from_c].type /~ "."
-						or game_board[from_r+1, from_c-1].type /~ "."
+				Result :=  game_board[from_r+1, from_c].get_type /~ "."
+						or game_board[from_r+1, from_c-1].get_type /~ "."
 				-- Moving down 1, left 2
 			elseif diff(to_r, from_r)=-1 and diff(to_c, from_c)=-2 then
-				Result :=  game_board[from_r-1, from_c].type /~ "."
-						or game_board[from_r-1, from_c-1].type /~ "."
+				Result :=  game_board[from_r-1, from_c].get_type /~ "."
+						or game_board[from_r-1, from_c-1].get_type /~ "."
 				-- Moving up 2
 			elseif diff(to_r, from_r)=2 then
-				Result :=  game_board[from_r+1, from_c].type /~ "."
-						or game_board[from_r+2, from_c].type /~ "."
+				Result :=  game_board[from_r+1, from_c].get_type /~ "."
+						or game_board[from_r+2, from_c].get_type /~ "."
 				-- Moving down 2
 			elseif diff(to_r, from_r)=-2 then
-				Result :=  game_board[from_r-1, from_c].type /~ "."
-						or game_board[from_r-2, from_c].type /~ "."
+				Result :=  game_board[from_r-1, from_c].get_type /~ "."
+						or game_board[from_r-2, from_c].get_type /~ "."
 			end
 		end
 

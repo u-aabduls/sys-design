@@ -1,6 +1,6 @@
 note
 	description: "Summary description for {ROOK}."
-	author: ""
+	author: "Umar Abdulselam"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -44,7 +44,7 @@ feature -- Queries
 				end
 			 end
 			end
-			possible_moves[row, col] := Current.type
+			possible_moves[row, col] := Current.get_type
 			Result := possible_moves
 		end
 
@@ -72,7 +72,7 @@ feature -- Queries
 					col > 4
 				loop
 				  if possible_moves[row, col] ~ "+" then
-				    if game_board[row, col].type /~ "." then
+				    if game_board[row, col].get_type /~ "." then
 				      if not equal_pts(from_r, from_c, row, col)
 				         and not equal_pts(row, col, to_r, to_c)
 				      then

@@ -21,6 +21,7 @@ create
 
 	make
 
+
 feature -- Initialization
 
 	make
@@ -29,9 +30,11 @@ feature -- Initialization
 			create type.make_from_string(".")
 		end
 
-feature -- Attributes
+
+feature {NONE} -- Attributes
 
 	type: STRING
+
 
 feature -- Queries
 
@@ -41,11 +44,13 @@ feature -- Queries
 			Result := type
 		end
 
+
 	is_same(other: PIECE): BOOLEAN
 			-- Is `other` the same type as Current?
 		do
 			Result := Current.get_type ~ other.get_type
 		end
+
 
 	get_moves(row: INTEGER; col: INTEGER): ARRAY2[STRING]
 			-- Return a 2D-Array of possible moves
@@ -56,6 +61,7 @@ feature -- Queries
 			create possible_moves.make_filled (".", 4, 4)
 			Result := possible_moves
 		end
+
 
 	is_blocked(from_r: INTEGER; from_c: INTEGER; to_r: INTEGER; to_c: INTEGER; game_board: ARRAY2[PIECE]): BOOLEAN
 			-- Is the chess piece at `game_board[from_r, from_c]`
@@ -68,11 +74,13 @@ feature -- Queries
 			Result := false
 		end
 
+
 	out: STRING
 			-- Return a STRING representation of PIECE.
 		do
-			Result := Current.type
+			Result := Current.get_type
 		end
+
 
 feature -- Helper Methods
 
@@ -95,7 +103,7 @@ feature -- Helper Methods
 		end
 
 	get_distance(x1: INTEGER; y1: INTEGER; x2: INTEGER; y2: INTEGER): REAL
-			-- Retrun the distance between two points
+			-- Retrun the distance between two points.
 			-- `(x1,y1)` and `(x2, y2)`.
 		do
 			Result := sqrt((power(x2-x1))+(power(y2-y1)))

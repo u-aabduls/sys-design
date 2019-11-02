@@ -15,31 +15,29 @@ feature -- command
     	do
 				-- perform some update on the GAME state
 
-			if not game.game_started then
-				game.error_handler.set_error_game_not_started
+			if game.game_started_state = false then
+				game.get_error_handler.set_error_game_not_started
 
-			elseif game.game_over then
-				game.error_handler.set_error_game_already_over
+			elseif game.game_over_state = true then
+				game.get_error_handler.set_error_game_already_over
 
 			elseif not game.is_valid_slot(r1, c1) then
-				game.error_handler.set_error_invalid_slot(r1, c1)
+				game.get_error_handler.set_error_invalid_slot(r1, c1)
 
 			elseif not game.is_valid_slot(r2, c2) then
-				game.error_handler.set_error_invalid_slot(r2, c2)
+				game.get_error_handler.set_error_invalid_slot(r2, c2)
 
 			elseif not game.is_slot_occupied(r1, c1) then
-				game.error_handler.set_error_slot_not_occupied(r1, c1)
+				game.get_error_handler.set_error_slot_not_occupied(r1, c1)
 
 			elseif not game.is_slot_occupied(r2, c2) then
-				game.error_handler.set_error_slot_not_occupied(r2, c2)
+				game.get_error_handler.set_error_slot_not_occupied(r2, c2)
 
-			elseif not game.is_possible_move(r1, c1, r2, c2) then
-				game.error_handler.set_error_move_not_possible(r1, c1, r2, c2)
+			elseif game.is_possible_move(r1, c1, r2, c2) = false then
+				game.get_error_handler.set_error_move_not_possible(r1, c1, r2, c2)
 
 			elseif game.is_blocked(r1, c1, r2, c2) then
-				game.error_handler.set_error(
-					"Error: Block exists between (" + r1.out + ", "
-					 + c1.out + ") and (" + r2.out + ", " + c2.out + ")")
+				game.get_error_handler.set_error_block_exists(r1, c1, r2, c2)
 
 			else
 				game.move_and_capture(r1, c1, r2, c2)

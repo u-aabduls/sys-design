@@ -48,7 +48,7 @@ feature -- Queries
 	 			end
 			 end
 			end
-			possible_moves[row, col] := Current.type
+			possible_moves[row, col] := Current.get_type
 			Result := possible_moves
 		end
 

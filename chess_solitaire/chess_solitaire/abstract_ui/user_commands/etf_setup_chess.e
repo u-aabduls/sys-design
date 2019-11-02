@@ -17,14 +17,14 @@ feature -- command
     	do
 				-- perform some update on the GAME state
 
-			if game.game_started then
-				game.error_handler.set_error_game_started
+			if game.game_started_state = true then
+				game.get_error_handler.set_error_game_started
 
 			elseif not game.is_valid_slot(row, col) then
-				game.error_handler.set_error_invalid_slot(row, col)
+				game.get_error_handler.set_error_invalid_slot(row, col)
 
 			elseif game.is_slot_occupied(row, col) then
-				game.error_handler.set_error_slot_occupied(row, col)
+				game.get_error_handler.set_error_slot_occupied(row, col)
 
 			else
 				game.setup_chess(c, row, col)

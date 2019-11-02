@@ -18,7 +18,7 @@ create {GAME_ACCESS}
 	make
 
 
-feature -- Attributes
+feature {NONE} -- Attributes
 
 	game_board: ARRAY2[PIECE]
 	moves_board: ARRAY2[STRING]
@@ -38,11 +38,11 @@ feature {NONE} -- Initialization
 		do
 				-- Create a default piece `piece`
 			create piece.make
-				-- Populate the game board with `piece`
+				-- Initialize `game_board` with `piece`
 			create game_board.make_filled(piece, 4,4)
-				-- Initialize the moves board to blank
+				-- Initialize `moves_board` to blank
 			create moves_board.make_filled (".", 4, 4)
-				-- Initialize GAME state to `default`
+				-- Initialize GAME state`
 			game_started := false
 			game_over := false
 			is_move_report := false
@@ -54,6 +54,57 @@ feature {NONE} -- Initialization
 		end
 
 
+feature -- Accessors
+
+	get_game_board: ARRAY2[PIECE]
+			-- Return the current `game_board`.
+		do
+			Result := game_board.deep_twin
+		end
+
+	get_moves_board: ARRAY2[STRING]
+			-- Return the current `moves_board`.
+		do
+			Result := moves_board.deep_twin
+		end
+
+	game_started_state: BOOLEAN
+			-- Return the current `game_started` state.
+		do
+			Result := game_started
+		end
+
+	game_over_state: BOOLEAN
+			-- Return the current `game_over` state.
+		do
+			Result := game_over
+		end
+
+	get_move_report_state: BOOLEAN
+			-- Return the current `is_move_report` state.
+		do
+			Result := is_move_report
+		end
+
+	get_piece_count: INTEGER
+			-- Return the current `pieces_count`.
+		do
+			Result := pieces_count
+		end
+
+	get_error_handler: GAME_ERROR_HANDLER
+			-- Return `error_handler`.
+		do
+			Result := error_handler
+		end
+
+	get_report_state: STRING
+			-- Return `report` state.
+		do
+			Result := report.deep_twin
+		end
+
+
 feature -- Commands
 
 	start_game
@@ -62,13 +113,13 @@ feature -- Commands
 
 		require
 			game_not_started:
-				not game_started
+				game_started_state = false
 		do
 			report := "Game In Progress..."
 			game_started := true
 
 		ensure
-			game_set_started:
+			game_started_set:
 				game_started
 
 			report_properly_set:
@@ -81,7 +132,7 @@ feature -- Commands
 
 		require
 			is_game_started:
-				game_started
+				game_started_state = true
 		do
 			make
 
@@ -100,15 +151,15 @@ feature -- Commands
 			    end
 			  end
 
-			 piece_count_reset:
+			piece_count_reset:
 			 	pieces_count = 0
 
-			 default_game_state:
+			default_game_state:
 			 	    game_started = false
 				and	game_over = false
 				and is_move_report = false
 
-			 default_error_state:
+			default_error_state:
 			 	    (not error_handler.is_set)
 			 	and error_handler.get_error ~ ""
 
@@ -121,7 +172,7 @@ feature -- Commands
 
 		require
 			game_not_started:
-				not game_started
+				game_started_state = false
 
 			valid_slot:
 				is_valid_slot(row, col)
@@ -137,12 +188,12 @@ feature -- Commands
 		do
 			report := "Game being Setup..."
 
-				-- Map integers to CHESS PIECES
+				-- Map integers to chess PIECES
 			mapped_pieces := integer_to_chess
 				-- Get the PIECE type from `chess`
 			type := mapped_pieces.at(chess)
 
-			if type ~ "K" then
+			if     type ~ "K" then
 				create {KING} chess_piece.make
 			elseif type ~ "Q" then
 				create {QUEEN} chess_piece.make
@@ -190,10 +241,10 @@ feature -- Commands
 
 		require
 			is_game_started:
-				game_started
+				game_started_state = true
 
 			game_not_over:
-				not game_over
+				game_over_state = false
 
 			slot_valid:
 				is_valid_slot(row, col)
@@ -216,6 +267,23 @@ feature -- Commands
 			move_report_set:
 				flag implies is_move_report
 
+			correct_moves_reported:
+				across 1 |..| 4 is i all
+			      across 1 |..| 4 is j all
+			      	moves_board[i, j] ~ "+" implies
+			      	  is_possible_move(row, col, i, j)
+			      end
+			    end
+
+			    and
+
+			    across 1 |..| 4 is i all
+			      across 1 |..| 4 is j all
+			      	moves_board[i, j] ~ "." implies
+			      	  not is_possible_move(row, col, i, j)
+			      end
+			    end
+
 		end
 
 
@@ -226,10 +294,10 @@ feature -- Commands
 
 		require
 			is_game_started:
-				game_started
+				game_started_state = true
 
 			game_not_over:
-				not game_over
+				game_over_state = false
 
 			slot_1_valid:
 				is_valid_slot(from_r, from_c)
@@ -301,9 +369,9 @@ feature -- Queries
 
 
 	is_possible_move(from_r: INTEGER; from_c: INTEGER; to_r: INTEGER; to_c: INTEGER): BOOLEAN
-			-- Is the the coordinate `(to_r, to_c)` a member
+			-- Is the coordinate `(to_r, to_c)` a member
 			-- of the set of possible moves of the chess piece
-			-- positioned at `game_board[from_r, from_c]`.
+			-- positioned at `game_board[from_r, from_c]`?
 		do
 			Result := moves(from_r, from_c, false)[to_r, to_c] ~ "+"
 		end

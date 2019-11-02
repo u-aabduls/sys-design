@@ -15,8 +15,8 @@ feature -- command
     	do
 				-- perform some update on the GAME state
 
-			if not game.game_started then
-				game.error_handler.set_error_game_not_started
+			if game.game_started_state = false then
+				game.get_error_handler.set_error_game_not_started
 			else
 				game.reset_game
 			end
