@@ -1,0 +1,49 @@
+-- ACCEPTANCE TEST #1: SUCCESS CASE: EASY
+
+-- Setup some chess pieces for the game
+setup_chess (N,1,1)
+setup_chess (R,2,1)
+setup_chess (Q,3,2)
+setup_chess (Q,3,4)
+setup_chess (P,4,1)
+
+-- Start the game
+start_game
+
+-- Show all possible moves for Knight@(1,1)
+moves(1,1)
+
+-- Show all possible moves for Rook@(2,1)
+moves(2,1)
+
+-- Show all possible moves for Queen@(3,2)
+moves(3,2)
+
+-- Show all possible moves for Pawn@(4,1)
+moves(4,1)
+
+-- Show all possible moves for Queen@(3,4)
+moves(3,4)
+
+-- Pawn capture Queen
+move_and_capture(4,1,3,2)
+
+-- Show all possible moves for Queen@(3,4)
+moves(3,4)
+
+-- Queen@(3,4) capture Pawn
+move_and_capture(3,4,3,2)
+
+-- Show all possible moves for Queen@(3,2)
+moves(3,2)
+
+-- Queen capture Rook@(2,1)
+move_and_capture(3,2,2,1)
+
+-- Show all possible moves for Queen@(2,1)
+moves(2,1)
+
+-- Queen capture Knight@(1,1)
+move_and_capture(2,1,1,1)
+
+-- Game Over: You Win!

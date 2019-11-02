@@ -1,0 +1,16 @@
+-- ACCEPTANCE TEST #45: VIOLATION CASE: QUEEN BLOCKED - #2
+
+-- Setup some chess pieces for the game
+setup_chess (Q,1,1)
+setup_chess (K,1,2)
+setup_chess (B,1,3)
+setup_chess (Q,1,4)
+
+start_game
+
+-- Blocked by King@(1,2)
+move_and_capture(1,1,1,4)
+
+-- Blocked by King@(1,3)
+move_and_capture(1,1,1,3)
+

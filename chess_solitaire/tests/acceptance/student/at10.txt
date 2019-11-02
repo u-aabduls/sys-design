@@ -1,0 +1,52 @@
+-- ACCEPTANCE TEST #10: SUCCESS CASE: HARD
+
+-- Setup some chess pieces for the game
+setup_chess (R,1,1)
+setup_chess (Q,2,2)
+setup_chess (P,2,4)
+setup_chess (R,3,1)
+setup_chess (N,3,2)
+
+
+-- Start the game
+start_game
+
+
+-- Show all possible moves for Rook@(1,1)
+moves(1,1)
+
+-- Show all possible moves for Queen@(2,2)
+moves(2,2)
+
+-- Show all possible moves for Pawn@(2,4)
+moves(2,4)
+
+-- Show all possible moves for Rook@(3,1)
+moves(3,1)
+
+-- Show all possible moves for Knight@(3,2)
+moves(3,2)
+
+
+-- Rook capture Rook@(3,1)
+move_and_capture(1,1,3,1)
+
+-- Show all possible moves for Rook@(3,1)
+moves(3,1)
+
+-- Rook capture Knight
+move_and_capture(3,1,3,2)
+
+-- Show all possible moves for Rook@(3,2)
+moves(3,2)
+
+-- Rook capture Queen
+move_and_capture(3,2,2,2)
+
+-- Show all possible moves for Rook@(2,2)
+moves(2,2)
+
+-- Rook capture Bishop
+move_and_capture(2,2,2,4)
+
+-- Game Over: You Win!

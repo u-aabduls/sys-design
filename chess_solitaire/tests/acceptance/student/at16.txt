@@ -1,0 +1,17 @@
+-- ACCEPTANCE TEST #16: VIOLATION CASE: reset_game - game_started
+
+-- Setup some chess pieces for the game
+setup_chess (R,3,2)
+setup_chess (P,4,2)
+
+-- reset the game before it has been started
+-- (should report Error)
+reset_game
+
+-- start the game
+start_game
+
+-- reset the game 
+-- should NOT report error
+reset_game
+

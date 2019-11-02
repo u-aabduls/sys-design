@@ -1,0 +1,11 @@
+-- ACCEPTANCE TEST #19: VIOLATION CASE: moves - game_not_over
+
+-- Setup some chess pieces for the game
+setup_chess (K,1,3)
+
+-- start game
+start_game
+
+-- check moves for K@(1,3) after game is over
+moves(1,3)
+

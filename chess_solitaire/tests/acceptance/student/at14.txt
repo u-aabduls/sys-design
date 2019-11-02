@@ -1,0 +1,15 @@
+-- ACCEPTANCE TEST #14: VIOLATION CASE: start_game - game_not_started
+
+-- Setup some chess pieces for the game
+setup_chess (R,3,2)
+setup_chess (P,4,2)
+
+-- start a game
+start_game
+
+-- Attempt to start game after game has already been started
+start_game
+
+-- Attempt to start game after game has already been started
+start_game
+

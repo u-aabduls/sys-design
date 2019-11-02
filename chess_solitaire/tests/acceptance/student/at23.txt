@@ -1,0 +1,17 @@
+-- ACCEPTANCE TEST #23: VIOLATION CASE: moves - game_not_over
+
+-- Setup some chess pieces for the game
+setup_chess (K,1,3)
+setup_chess (Q,2,4)
+
+-- attempt to move_and_capture while game hasn't started
+move_and_capture(-10,10,0,5)
+
+-- start game
+start_game
+
+-- finish the game
+move_and_capture(2,4,1,3)
+
+-- attempt to move and capture after game already ended
+move_and_capture(-10,10,0,5)

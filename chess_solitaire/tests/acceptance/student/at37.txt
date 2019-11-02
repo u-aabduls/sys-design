@@ -1,0 +1,25 @@
+-- ACCEPTANCE TEST #37: VIOLATION CASE: BISHOP BLOCKED - #2
+
+-- Setup some chess pieces for the game
+setup_chess (B,1,4)
+setup_chess (K,2,3)
+setup_chess (P,3,2)
+setup_chess (Q,4,1)
+
+start_game
+
+-- Blocked by King@(2,3)
+move_and_capture(1,4,4,1)
+
+-- Blocked by King@(2,3)
+move_and_capture(1,4,3,2)
+
+-- Blocked by King@(2,3)
+move_and_capture(1,4,4,1)
+
+-- Bishop capture King@(2,3)
+move_and_capture(1,4,2,3)
+
+-- Blocked by Q@(4,1)
+move_and_capture(2,3,4,1)
+

@@ -1,0 +1,29 @@
+-- ACCEPTANCE TEST #20: VIOLATION CASE: moves - slot_valid
+
+-- Setup some chess pieces for the game
+setup_chess (K,1,3)
+setup_chess (K,2,4)
+
+-- start game
+start_game
+
+-- check moves for (-1,3), an out of bounds
+-- position on the game board
+moves(-1,3)
+
+-- check moves for (-9,-3), an out of bounds
+-- position on the game board
+moves(-9,-3)
+
+-- check moves for (2,5), an out of bounds
+-- position on the game board
+moves(2,5)
+
+-- check moves for (7,2), an out of bounds
+-- position on the game board
+moves(7,2)
+
+-- check moves for (7,10), an out of bounds
+-- position on the game board
+moves(7,10)
+

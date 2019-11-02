@@ -1,0 +1,55 @@
+  # of chess pieces on board: 0
+  Game being Setup...
+  ....
+  ....
+  ....
+  ....
+->setup_chess(R,1,3)
+  # of chess pieces on board: 1
+  Game being Setup...
+  ..R.
+  ....
+  ....
+  ....
+->setup_chess(K,2,3)
+  # of chess pieces on board: 2
+  Game being Setup...
+  ..R.
+  ..K.
+  ....
+  ....
+->setup_chess(B,3,3)
+  # of chess pieces on board: 3
+  Game being Setup...
+  ..R.
+  ..K.
+  ..B.
+  ....
+->setup_chess(Q,4,3)
+  # of chess pieces on board: 4
+  Game being Setup...
+  ..R.
+  ..K.
+  ..B.
+  ..Q.
+->start_game
+  # of chess pieces on board: 4
+  Game In Progress...
+  ..R.
+  ..K.
+  ..B.
+  ..Q.
+->move_and_capture(1,3,4,3)
+  # of chess pieces on board: 4
+  Error: Block exists between (1, 3) and (4, 3)
+  ..R.
+  ..K.
+  ..B.
+  ..Q.
+->move_and_capture(1,3,3,3)
+  # of chess pieces on board: 4
+  Error: Block exists between (1, 3) and (3, 3)
+  ..R.
+  ..K.
+  ..B.
+  ..Q.

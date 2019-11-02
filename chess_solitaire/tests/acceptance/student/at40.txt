@@ -1,0 +1,22 @@
+-- ACCEPTANCE TEST #40: VIOLATION CASE: BISHOP BLOCKED - #5
+
+-- Setup some chess pieces for the game
+setup_chess (B,3,2)
+setup_chess (P,4,1)
+setup_chess (P,2,3)
+setup_chess (P,1,4)
+
+start_game
+
+-- Blocked by Pawn@(2,3)
+move_and_capture(3,2,1,4)
+
+-- Bishop capture Pawn@(4,1)
+move_and_capture(3,2,4,1)
+
+-- Blocked by Pawn@(2,3)
+move_and_capture(4,1,1,4)
+
+-- Blocked by Pawn@(2,3)
+move_and_capture(4,1,1,4)
+

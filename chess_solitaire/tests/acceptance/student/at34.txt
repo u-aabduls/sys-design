@@ -1,0 +1,19 @@
+-- ACCEPTANCE TEST #34: VIOLATION CASE: ROOK BLOCKED - #4
+
+-- Setup some chess pieces for the game
+setup_chess (R,4,4)
+setup_chess (K,4,3)
+setup_chess (B,4,2)
+setup_chess (Q,4,1)
+
+start_game
+
+-- Blocked by King@(2,3)
+move_and_capture(4,4,4,1)
+
+-- Blocked by King@(2,3)
+move_and_capture(4,4,4,2)
+
+-- Blocked by King@(2,3)
+move_and_capture(4,4,4,1)
+
