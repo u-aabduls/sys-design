@@ -22,7 +22,7 @@ create
 	make
 
 
-feature -- Initialization
+feature {GAME} -- Initialization
 
 	make
 			-- Initialize a default PIECE object: "."
@@ -109,4 +109,14 @@ feature -- Helper Methods
 			Result := sqrt((power(x2-x1))+(power(y2-y1)))
 		end
 
+
+invariant
+	unchanged_type:
+		   type ~ "."
+		or type ~ "K"
+		or type ~ "Q"
+		or type ~ "N"
+		or type ~ "B"
+		or type ~ "R"
+		or type ~ "P"
 end

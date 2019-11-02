@@ -82,4 +82,9 @@ feature -- Queries
 			end
 		end
 
+
+invariant
+	unchanged_type:
+		type ~ "N"
+
 end

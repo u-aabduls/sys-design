@@ -57,31 +57,31 @@ feature {NONE} -- Initialization
 feature -- Accessors
 
 	get_game_board: ARRAY2[PIECE]
-			-- Return the current `game_board`.
+			-- Return the current state of `game_board`.
 		do
 			Result := game_board.deep_twin
 		end
 
 	get_moves_board: ARRAY2[STRING]
-			-- Return the current `moves_board`.
+			-- Return the current state of `moves_board`.
 		do
 			Result := moves_board.deep_twin
 		end
 
 	game_started_state: BOOLEAN
-			-- Return the current `game_started` state.
+			-- Return the current state of `game_started`.
 		do
 			Result := game_started
 		end
 
 	game_over_state: BOOLEAN
-			-- Return the current `game_over` state.
+			-- Return the current state of `game_over`.
 		do
 			Result := game_over
 		end
 
 	get_move_report_state: BOOLEAN
-			-- Return the current `is_move_report` state.
+			-- Return the current state of `is_move_report`.
 		do
 			Result := is_move_report
 		end
@@ -93,13 +93,13 @@ feature -- Accessors
 		end
 
 	get_error_handler: GAME_ERROR_HANDLER
-			-- Return `error_handler`.
+			-- Return the current `error_handler`.
 		do
 			Result := error_handler
 		end
 
 	get_report_state: STRING
-			-- Return `report` state.
+			-- Return the current state of `report`.
 		do
 			Result := report.deep_twin
 		end
@@ -362,7 +362,7 @@ feature -- Queries
 
 	is_slot_occupied(row: INTEGER; col: INTEGER): BOOLEAN
 			-- Is there a chess piece located at position
-			-- (row, col) on `game_board`?
+			-- `(row, col)` on `game_board`?
 		do
 			Result := game_board[row, col].get_type /~ "."
 		end
@@ -452,6 +452,9 @@ feature -- Auxiliary Features
 				Result.append("  ")
 				across 1 |..| 4 is j loop
 					Result.append(board[i,j].out)
+						-- Uncomment for more readable display
+						-- of `game_board` and `moves_baord`.
+--					Result.append(board[i,j].out + " ")
 				end
 				if i < 4 then
 					Result.append("%N")
@@ -498,6 +501,10 @@ feature -- Auxiliary Features
 			else
 				Result.append(board_out(game_board))
 			end
+
+				-- Uncomment for a more a readable
+				-- display to command line.
+--			Result.append("%N")
 
 				-- Reset `moves_board` state after
 				-- reporting the sate of the GAME.

@@ -52,4 +52,9 @@ feature -- Queries
 			Result := possible_moves
 		end
 
+
+invariant
+	unchanged_type:
+		type ~ "K"
+
 end

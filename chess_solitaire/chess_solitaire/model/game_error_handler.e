@@ -19,7 +19,7 @@ feature {NONE} -- Attributes
 	game: GAME
 
 
-feature -- Initialization
+feature {GAME} -- Initialization
 
 	init
 			-- Initialize the error handler to

@@ -113,4 +113,9 @@ feature -- Queries
 			end
 		end
 
+
+invariant
+	unchanged_type:
+		type ~ "Q"
+
 end

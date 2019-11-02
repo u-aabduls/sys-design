@@ -50,7 +50,7 @@ feature -- Queries
 			possible_moves[row, col] := Current.get_type
 			Result := possible_moves
 		end
-		
+
 
 	is_blocked(from_r: INTEGER; from_c: INTEGER; to_r: INTEGER; to_c: INTEGER; game_board: ARRAY2[PIECE]): BOOLEAN
 			-- Refer to Precursor class for feature definition
@@ -94,5 +94,10 @@ feature -- Queries
 				row := row + 1
 			end
 		end
+
+
+invariant
+	unchanged_type:
+		type ~ "B"
 
 end
