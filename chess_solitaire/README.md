@@ -1,4 +1,4 @@
-CHESS SOLITAIRE
+# CHESS SOLITAIRE
 
 A single player chess solitaire game on a 4x4 game board. The game involes the standard set of chess pieces {K, Q, N, B, R, P} and their respective move abilities.
 
