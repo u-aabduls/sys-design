@@ -11,8 +11,10 @@ type CHESS = {
 
 setup_chess(c: CHESS; row: INTEGER; col: INTEGER)
 	-- Set up by adding a chess at (`row`, `col`).
+	
 start_game
 	-- Start the game after setting up chess pieces.
+	
 reset_game
 	-- Start to setup a new game.
 
@@ -23,3 +25,11 @@ move_and_capture(r1: INTEGER; c1: INTEGER; r2: INTEGER; c2: INTEGER)
 moves(row: INTEGER; col: INTEGER)
 	-- Show all possible moves of the chess located at (`row`, `col`),
 	-- including those that are not valid.
+	
+undo
+	-- Undo the last move and reset `game_board`
+	-- to its previous state.
+	
+restart
+	-- Restart the GAME to its state when
+	-- the game was started.
