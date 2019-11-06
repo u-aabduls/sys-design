@@ -1,0 +1,10 @@
+-- ACCEPTANCE TEST #7: SUCCESS CASE: HARD
+
+-- Setup some chess pieces for the game
+setup_chess (R,1,4)
+setup_chess (N,2,1)
+setup_chess (Q,3,2)
+setup_chess (N,3,3)
+setup_chess (P,4,3)
+
+start_game

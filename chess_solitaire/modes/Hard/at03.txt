@@ -1,0 +1,10 @@
+HARD
+
+-- Setup some chess pieces for the game
+setup_chess (R,1,3)
+setup_chess (R,2,1)
+setup_chess (N,2,3)
+setup_chess (Q,4,1)
+setup_chess (B,4,4)
+
+start_game

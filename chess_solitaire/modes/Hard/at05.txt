@@ -1,0 +1,9 @@
+HARD
+
+setup_chess(P,1,1)
+setup_chess(Q,3,1)
+setup_chess(R,3,2)
+setup_chess(N,3,4)
+setup_chess(R,4,2)
+
+start_game

@@ -1,0 +1,11 @@
+MEDIUM
+
+-- Setup some chess pieces for the game
+setup_chess (Q,1,3)
+setup_chess (R,1,4)
+setup_chess (R,2,1)
+setup_chess (N,2,2)
+setup_chess (B,3,4)
+setup_chess (B,4,1)
+
+start_game
