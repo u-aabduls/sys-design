@@ -24,6 +24,7 @@ feature -- Initialization
 	make
 			-- Initialize a KNIGHT object: "N"
 		do
+			Precursor
 			create type.make_from_string ("N")
 		end
 
@@ -56,35 +57,30 @@ feature -- Queries
 		do
 			Result := false
 				-- Moving up 1, right 2
-			if diff(to_r, from_r)=1 and diff(to_c, from_c)=2 then
+			if helper.diff(to_r, from_r)=1 and helper.diff(to_c, from_c)=2 then
 				Result :=  game_board[from_r+1, from_c].get_type /~ "."
 						or game_board[from_r+1, from_c+1].get_type /~ "."
 				-- Moving down 1, right 2
-			elseif diff(to_r, from_r)=-1 and diff(to_c, from_c)=2 then
+			elseif helper.diff(to_r, from_r)=-1 and helper.diff(to_c, from_c)=2 then
 				Result :=  game_board[from_r-1, from_c].get_type /~ "."
 						or game_board[from_r-1, from_c+1].get_type /~ "."
 				-- Moving up 1, left 2
-			elseif diff(to_r, from_r)=1 and diff(to_c, from_c)=-2 then
+			elseif helper.diff(to_r, from_r)=1 and helper.diff(to_c, from_c)=-2 then
 				Result :=  game_board[from_r+1, from_c].get_type /~ "."
 						or game_board[from_r+1, from_c-1].get_type /~ "."
 				-- Moving down 1, left 2
-			elseif diff(to_r, from_r)=-1 and diff(to_c, from_c)=-2 then
+			elseif helper.diff(to_r, from_r)=-1 and helper.diff(to_c, from_c)=-2 then
 				Result :=  game_board[from_r-1, from_c].get_type /~ "."
 						or game_board[from_r-1, from_c-1].get_type /~ "."
 				-- Moving up 2
-			elseif diff(to_r, from_r)=2 then
+			elseif helper.diff(to_r, from_r)=2 then
 				Result :=  game_board[from_r+1, from_c].get_type /~ "."
 						or game_board[from_r+2, from_c].get_type /~ "."
 				-- Moving down 2
-			elseif diff(to_r, from_r)=-2 then
+			elseif helper.diff(to_r, from_r)=-2 then
 				Result :=  game_board[from_r-1, from_c].get_type /~ "."
 						or game_board[from_r-2, from_c].get_type /~ "."
 			end
 		end
-
-
-invariant
-	unchanged_type:
-		type ~ "N"
 
 end

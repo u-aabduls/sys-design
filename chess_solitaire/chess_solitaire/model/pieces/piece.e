@@ -12,7 +12,7 @@ class
 	PIECE
 
 inherit
-	SINGLE_MATH
+	ANY
 	  redefine
 	    out
 	  end
@@ -28,12 +28,14 @@ feature {GAME} -- Initialization
 			-- Initialize a default PIECE object: "."
 		do
 			create type.make_from_string(".")
+			create helper.init
 		end
 
 
-feature {NONE} -- Attributes
+feature -- Attributes
 
 	type: STRING
+	helper: GAME_HELPER
 
 
 feature -- Queries
@@ -82,34 +84,6 @@ feature -- Queries
 		end
 
 
-feature -- Helper Methods
-
-	diff(a: INTEGER; b: INTEGER): INTEGER
-			-- Return the difference of `a` and `b`.
-		do
-			Result := a - b
-		end
-
-	equal_pts(x1: INTEGER; y1: INTEGER; x2: INTEGER; y2: INTEGER): BOOLEAN
-			-- Are the points `(x1, y1)` and `(x2, y2)` equal?
-		do
-			Result := x1 = x2 and y1 = y2
-		end
-
-	power(x: INTEGER): INTEGER
-			-- Return `x` raised to the second power.
-		do
-			Result := x * x
-		end
-
-	get_distance(x1: INTEGER; y1: INTEGER; x2: INTEGER; y2: INTEGER): REAL
-			-- Retrun the distance between two points.
-			-- `(x1,y1)` and `(x2, y2)`.
-		do
-			Result := sqrt((power(x2-x1))+(power(y2-y1)))
-		end
-
-
 invariant
 	unchanged_type:
 		   type ~ "."
@@ -119,4 +93,5 @@ invariant
 		or type ~ "B"
 		or type ~ "R"
 		or type ~ "P"
+		
 end

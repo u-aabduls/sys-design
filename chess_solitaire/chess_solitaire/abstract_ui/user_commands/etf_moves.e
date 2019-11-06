@@ -23,10 +23,10 @@ feature -- command
 			elseif game.game_over_state = true then
 				game.get_error_handler.set_error_game_already_over
 
-			elseif not game.is_valid_slot(row, col) then
+			elseif not game.get_helper.is_valid_slot(row, col) then
 				game.get_error_handler.set_error_invalid_slot(row, col)
 
-			elseif not game.is_slot_occupied(row, col) then
+			elseif not game.get_helper.is_slot_occupied(row, col) then
 				game.get_error_handler.set_error_slot_not_occupied(row, col)
 			else
 				dormant := game.moves(row, col, true)

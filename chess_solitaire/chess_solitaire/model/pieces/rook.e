@@ -24,6 +24,7 @@ feature -- Initializaton
 	make
 			-- Initialize a ROOK object: "R"
 		do
+			Precursor
 			create type.make_from_string ("R")
 		end
 
@@ -73,12 +74,12 @@ feature -- Queries
 				loop
 				  if possible_moves[row, col] ~ "+" then
 				    if game_board[row, col].get_type /~ "." then
-				      if not equal_pts(from_r, from_c, row, col)
-				         and not equal_pts(row, col, to_r, to_c)
+				      if not helper.equal_pts(from_r, from_c, row, col)
+				         and not helper.equal_pts(row, col, to_r, to_c)
 				      then
-				      	 Result := get_distance(from_r, from_c, row, col) +
-							    get_distance(row, col, to_r, to_c) =
-								get_distance(from_r, from_c, to_r, to_c)
+				      	 Result := helper.get_distance(from_r, from_c, row, col) +
+							    helper.get_distance(row, col, to_r, to_c) =
+								helper.get_distance(from_r, from_c, to_r, to_c)
 						 if Result then
 						 	row := 5
 						 	col := 5
@@ -91,10 +92,5 @@ feature -- Queries
 				row := row + 1
 			end
 		end
-
-
-invariant
-	unchanged_type:
-		type ~ "R"
 
 end

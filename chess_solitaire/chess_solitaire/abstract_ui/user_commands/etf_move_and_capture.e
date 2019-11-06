@@ -21,22 +21,22 @@ feature -- command
 			elseif game.game_over_state = true then
 				game.get_error_handler.set_error_game_already_over
 
-			elseif not game.is_valid_slot(r1, c1) then
+			elseif not game.get_helper.is_valid_slot(r1, c1) then
 				game.get_error_handler.set_error_invalid_slot(r1, c1)
 
-			elseif not game.is_valid_slot(r2, c2) then
+			elseif not game.get_helper.is_valid_slot(r2, c2) then
 				game.get_error_handler.set_error_invalid_slot(r2, c2)
 
-			elseif not game.is_slot_occupied(r1, c1) then
+			elseif not game.get_helper.is_slot_occupied(r1, c1) then
 				game.get_error_handler.set_error_slot_not_occupied(r1, c1)
 
-			elseif not game.is_slot_occupied(r2, c2) then
+			elseif not game.get_helper.is_slot_occupied(r2, c2) then
 				game.get_error_handler.set_error_slot_not_occupied(r2, c2)
 
-			elseif game.is_possible_move(r1, c1, r2, c2) = false then
+			elseif game.get_helper.is_possible_move(r1, c1, r2, c2) = false then
 				game.get_error_handler.set_error_move_not_possible(r1, c1, r2, c2)
 
-			elseif game.is_blocked(r1, c1, r2, c2) then
+			elseif game.get_helper.is_blocked(r1, c1, r2, c2) then
 				game.get_error_handler.set_error_block_exists(r1, c1, r2, c2)
 
 			else

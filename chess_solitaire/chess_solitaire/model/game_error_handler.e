@@ -115,6 +115,26 @@ feature -- Commands
 			error_flagged := true
 		end
 
+	set_error_no_undo_available
+			-- Set `no_undo_available` error.
+		do
+			error := "Error: No game state to revert to."
+			error_flagged := true
+		end
+
+	set_error_no_moves_made
+			-- Set `no_moves_made` error.
+		do
+			error := "Error: No moves made yet."
+			error_flagged := true
+		end
+
+	set_error_cant_undo_past_start
+			-- Set `no_undo_past_restart_available` error.
+		do
+			error := "Error: Can't undo past the start of the game."
+			error_flagged := true
+		end
 
 feature -- Queries
 

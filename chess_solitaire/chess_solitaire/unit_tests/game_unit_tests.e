@@ -363,7 +363,7 @@ feature -- Tests
 
 				-- Game Over: You Lose!
 
-			Result := not game.valid_move_exists
+			Result := not game.get_helper.valid_move_exists
 
 			check Result end
 		end

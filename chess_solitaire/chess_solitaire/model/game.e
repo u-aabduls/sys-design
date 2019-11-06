@@ -22,9 +22,12 @@ feature {NONE} -- Attributes
 
 	game_board: ARRAY2[PIECE]
 	moves_board: ARRAY2[STRING]
-	pieces_count: INTEGER
+	pieces_count, move_count: INTEGER
+	move_count_for_setup, piece_count_at_start: INTEGER
 	game_started, game_over, is_move_report: BOOLEAN
 	report: STRING
+	game_history: LINKED_LIST[ARRAY2[PIECE]]
+	helper: GAME_HELPER
 	error_handler: GAME_ERROR_HANDLER
 
 
@@ -36,10 +39,9 @@ feature {NONE} -- Initialization
 		local
 			piece: PIECE
 		do
-				-- Create a default piece `piece`
-			create piece.make
-				-- Initialize `game_board` with `piece`
-			create game_board.make_filled(piece, 4,4)
+				-- Initialize `game_board` with default
+				-- pieces `piece`
+			create game_board.make_filled(create {PIECE}.make, 4, 4)
 				-- Initialize `moves_board` to blank
 			create moves_board.make_filled (".", 4, 4)
 				-- Initialize GAME state`
@@ -47,8 +49,17 @@ feature {NONE} -- Initialization
 			game_over := false
 			is_move_report := false
 			pieces_count := 0
+			move_count := 0
+				-- Attributes used for backtracking
+				-- and restarting a current game
+			move_count_for_setup := 0
+			piece_count_at_start := 0
+				-- Initialize history to empty
+			create game_history.make
 				-- Initialize `error_handler` to `default`
 			create error_handler.init
+				-- Initialize `helper`
+			create helper.init
 				-- Set initial report message
 			report := "Game being Setup..."
 		end
@@ -92,6 +103,36 @@ feature -- Accessors
 			Result := pieces_count
 		end
 
+	get_move_count: INTEGER
+			-- Return the current `move_count`.
+		do
+			Result := move_count
+		end
+
+	get_move_count_for_setup: INTEGER
+			-- Return the current `move_count_for_setup`.
+		do
+			Result := move_count_for_setup
+		end
+
+	get_piece_count_at_start: INTEGER
+			-- Return the `piece_count_at_start`.
+		do
+			Result := piece_count_at_start
+		end
+
+	get_game_history: LINKED_LIST[ARRAY2[PIECE]]
+			-- Return the current `game_history`.
+		do
+			Result := game_history
+		end
+
+	get_helper: GAME_HELPER
+			-- Return the current `helper`.
+		do
+			Result := helper
+		end
+
 	get_error_handler: GAME_ERROR_HANDLER
 			-- Return the current `error_handler`.
 		do
@@ -114,13 +155,26 @@ feature -- Commands
 		require
 			game_not_started:
 				game_started_state = false
+
 		do
 			report := "Game In Progress..."
+				-- Store the number of moves made
+				-- to setup the game
+			move_count_for_setup := move_count
+				-- Store the piece count at the
+				-- start of the game
+			piece_count_at_start := pieces_count
 			game_started := true
 
 		ensure
 			game_started_set:
 				game_started
+
+			piece_count_at_start_set:
+				piece_count_at_start = old pieces_count
+
+			move_count_for_setup_set:
+				move_count_for_setup = old move_count
 
 			report_properly_set:
 				report ~ "Game In Progress..."
@@ -158,6 +212,8 @@ feature -- Commands
 			 	    game_started = false
 				and	game_over = false
 				and is_move_report = false
+				and piece_count_at_start = 0
+				and move_count_for_setup = 0
 
 			default_error_state:
 			 	    (not error_handler.is_set)
@@ -175,10 +231,10 @@ feature -- Commands
 				game_started_state = false
 
 			valid_slot:
-				is_valid_slot(row, col)
+				get_helper.is_valid_slot(row, col)
 
 			slot_not_occupied:
-				not is_slot_occupied(row, col)
+				not get_helper.is_slot_occupied(row, col)
 
 		local
 			type: STRING
@@ -188,8 +244,12 @@ feature -- Commands
 		do
 			report := "Game being Setup..."
 
+				-- Save the current `game_board` state
+			game_history.put_front(game_board.deep_twin)
+			move_count := move_count + 1
+
 				-- Map integers to chess PIECES
-			mapped_pieces := integer_to_chess
+			mapped_pieces := get_helper.integer_to_chess
 				-- Get the PIECE type from `chess`
 			type := mapped_pieces.at(chess)
 
@@ -217,8 +277,9 @@ feature -- Commands
 			report_set:
 				report ~ "Game being Setup..."
 
-			piece_count_incremented:
-				pieces_count = old pieces_count + 1
+			counts_incremented:
+					pieces_count = old pieces_count + 1
+				and move_count = old move_count + 1
 
 			chess_piece_set:
 				not game_board[row, col].is_same((old game_board.deep_twin)[row, col])
@@ -247,10 +308,10 @@ feature -- Commands
 				game_over_state = false
 
 			slot_valid:
-				is_valid_slot(row, col)
+				get_helper.is_valid_slot(row, col)
 
 			slot_occupied:
-				is_slot_occupied(row, col)
+				get_helper.is_slot_occupied(row, col)
 
 		do
 			report := "Game In Progress..."
@@ -271,7 +332,7 @@ feature -- Commands
 				across 1 |..| 4 is i all
 			      across 1 |..| 4 is j all
 			      	moves_board[i, j] ~ "+" implies
-			      	  is_possible_move(row, col, i, j)
+			      	  get_helper.is_possible_move(row, col, i, j)
 			      end
 			    end
 
@@ -280,7 +341,7 @@ feature -- Commands
 			    across 1 |..| 4 is i all
 			      across 1 |..| 4 is j all
 			      	moves_board[i, j] ~ "." implies
-			      	  not is_possible_move(row, col, i, j)
+			      	  not get_helper.is_possible_move(row, col, i, j)
 			      end
 			    end
 
@@ -300,27 +361,30 @@ feature -- Commands
 				game_over_state = false
 
 			slot_1_valid:
-				is_valid_slot(from_r, from_c)
+				get_helper.is_valid_slot(from_r, from_c)
 
 			slot_2_valid:
-				is_valid_slot(to_r, to_c)
+				get_helper.is_valid_slot(to_r, to_c)
 
 			slot_1_occupied:
-				is_slot_occupied(from_r, from_c)
+				get_helper.is_slot_occupied(from_r, from_c)
 
 			slot_2_occupied:
-				is_slot_occupied(to_r, to_c)
+				get_helper.is_slot_occupied(to_r, to_c)
 
 			is_possible_move:
-				is_possible_move(from_r, from_c, to_r, to_c)
+				get_helper.is_possible_move(from_r, from_c, to_r, to_c)
 
 			is_not_blocked:
-				not is_blocked(from_r, from_c, to_r, to_c)
+				not get_helper.is_blocked(from_r, from_c, to_r, to_c)
 
 		local
 			chess_piece: PIECE
 
 		do
+				-- Save the current `game_board` state
+			game_history.put_front(game_board.deep_twin)
+			move_count := move_count + 1
 				-- Create a default `PIECE`
 			create chess_piece.make
 			game_board[to_r, to_c] := game_board[from_r, from_c]
@@ -340,133 +404,114 @@ feature -- Commands
 			other_slots_unchanged:
 				across 1 |..| 4 is i all
 			      across 1 |..| 4 is j all
-				    ((i /= from_r) and (j /= from_c)) and ((i /= to_r) and (j /= to_c)) implies
+				        ((i /= from_r) and (j /= from_c))
+				    and ((i /= to_r) and (j /= to_c)) implies
 				    game_board[i, j].is_same((old game_board.deep_twin)[i, j])
 			      end
 			    end
 		end
 
 
-feature -- Queries
+	undo
+			-- Undo the last move and reset `game_board`
+			-- to its previous state.
+		require
+			game_not_over:
+				game_over_state = false
 
-	is_valid_slot(row: INTEGER; col: INTEGER): BOOLEAN
-			-- Is the coordinate `(row,col)` a valid
-			-- coordinate on `game_baord`?
+			move_history_not_empty:
+				not (get_move_count = 0) and not (get_game_history.count = 0)
+
+			not_undo_past_game_start:
+				get_move_count > get_move_count_for_setup
+
 		do
-			Result := 	 row > 0
-					 and row < 5
-			   	     and col > 0
-			         and col < 5
-		end
-
-
-	is_slot_occupied(row: INTEGER; col: INTEGER): BOOLEAN
-			-- Is there a chess piece located at position
-			-- `(row, col)` on `game_board`?
-		do
-			Result := game_board[row, col].get_type /~ "."
-		end
-
-
-	is_possible_move(from_r: INTEGER; from_c: INTEGER; to_r: INTEGER; to_c: INTEGER): BOOLEAN
-			-- Is the coordinate `(to_r, to_c)` a member
-			-- of the set of possible moves of the chess piece
-			-- positioned at `game_board[from_r, from_c]`?
-		do
-			Result := moves(from_r, from_c, false)[to_r, to_c] ~ "+"
-		end
-
-
-	is_blocked(from_r: INTEGER; from_c: INTEGER; to_r: INTEGER; to_c: INTEGER): BOOLEAN
-			-- Is the chess piece at `game_board[from_r, from_c]`
-			-- blocked from moving and capturing the chess
-			-- piece at `game_board[to_r, to_c]` by some other
-			-- chess piece along the path of the move?
-
-		local
-			piece: PIECE
-		do
-			piece := game_board[from_r, from_c]
-			Result := piece.is_blocked(from_r, from_c,to_r, to_c, game_board.deep_twin)
-		end
-
-
-	valid_move_exists: BOOLEAN
-			-- Does there exist any remaining possible moves?
-			-- if `Result = false`, the game is over and the player has lost.
-		local
-			possible_moves: ARRAY2[STRING]
-		do
-			Result := false
-				-- Iterate `game_board` and get the
-				-- possible moves for each `PIECE` on
-				-- the board
-			across 1 |..| 4 is row loop
-			 across 1 |..| 4  is col loop
-			   if is_slot_occupied(row, col) then
-			     possible_moves := game_board[row, col].get_moves(row, col)
-			       		-- Iterate the possible moves for the
-			       		-- identified `PIECE` and check if there
-			       		-- exists another `PIECE` located at any
-			       		-- of the valid move coordinates
-				   across 1 |..| 4 is i loop
-			 		across 1 |..| 4  is j loop
-			 		  if    possible_moves[i,j] ~ "+"
-			 		  	and is_slot_occupied(i, j)
-			 		  	and not is_blocked(row, col, i, j) then
-			 		  	  Result := true
-			 		  end
-			 		end
-				   end
-			   end
-			 end
+			game_board := game_history.first
+				-- Remove the latest entry to `game_history`.
+			get_helper.remove_latest(1)
+			move_count := move_count - 1
+				-- Update the piece count
+			if game_started then
+				pieces_count := pieces_count + 1
+			else
+				pieces_count := pieces_count - 1
 			end
+
+		ensure
+			move_count_decremented:
+				move_count = old move_count - 1
+
+			previous_game_board_set:
+				across 1 |..| 4 is row all
+			      across 1 |..| 4 is col all
+	          	    game_board[row, col].get_type ~
+	          	    (old game_history.deep_twin).first[row, col].get_type
+			      end
+			    end
 		end
 
 
-feature -- Auxiliary Features
+	restart
+			-- Restart the GAME to its state when
+			-- the game was started.
+		require
+			game_started:
+				game_started_state = true
 
-	integer_to_chess: HASH_TABLE[STRING, INTEGER]
-			-- Return a `HASH_TABLE` containing a mapping
-			-- of the `PIECE` types to integers.
+			game_not_over:
+				game_over_state = false
+
+			restart_available:
+				get_move_count > get_move_count_for_setup
+
 		local
-			table: HASH_TABLE[STRING, INTEGER]
+			n: INTEGER
+
 		do
-			create table.make(0)
-			table.extend("K", 1)
-			table.extend("Q", 2)
-			table.extend("N", 3)
-			table.extend("B", 4)
-			table.extend("R", 5)
-			table.extend("P", 6)
-			Result := table
+				-- Get the position of initial `game_board`
+			n := move_count - move_count_for_setup
+				-- Reset `game_board` to the game board the
+				-- game was started with
+			game_board := game_history.at(n)
+				-- Remove the latest `n` entries to the game
+				-- history that proceeded the initial `game_board`
+			get_helper.remove_latest(n)
+				-- Restore the piece count and move count
+				-- to the `pieces_count` and `move_count`
+				-- at the start of the game
+			pieces_count := piece_count_at_start
+			move_count := move_count_for_setup
+
+		ensure
+			piece_count_reset:
+				pieces_count = piece_count_at_start
+
+			initial_game_board_set:
+				across 1 |..| 4 is row all
+			      across 1 |..| 4 is col all
+	          	    game_board[row, col].get_type ~
+	          	    (old game_history.deep_twin).at(old move_count -
+	          	     old move_count_for_setup)[row, col].get_type
+			      end
+			    end
+
+			previous_game_history_wiped:
+				game_history.count = old move_count_for_setup
 		end
 
 
-	board_out(board: ARRAY2[ANY]): STRING
-			-- Return a string representation of a 2D-ARRAY
-			-- board `board`.
-		do
-			create Result.make_empty
-			across 1 |..| 4 is i loop
-				Result.append("  ")
-				across 1 |..| 4 is j loop
-					Result.append(board[i,j].out)
-						-- Uncomment for more readable display
-						-- of `game_board` and `moves_baord`.
---					Result.append(board[i,j].out + " ")
-				end
-				if i < 4 then
-					Result.append("%N")
-				end
-			end
-		end
-
+feature -- Report
 
 	out: STRING
 			-- Report the current state of the GAME.
 		do
-			Result := "  # of chess pieces on board: "
+			Result := ""
+
+				-- Uncomment for a more a readable
+				-- display to command line.
+--			Result.append("%N")
+
+			Result.append("  # of chess pieces on board: ")
 			Result.append(pieces_count.out)
 			Result.append("%N")
 
@@ -487,7 +532,7 @@ feature -- Auxiliary Features
 
 				-- Game is lost if:
 			elseif  game_started
-				and not valid_move_exists then
+				and not get_helper.valid_move_exists then
 				report := "Game Over: You Lose!"
 				game_over := true
 
@@ -496,10 +541,14 @@ feature -- Auxiliary Features
 				-- Append the `report` state
 			Result.append ("  " + report + "%N")
 
+				-- Uncomment for a more a readable
+				-- display to command line.
+--			Result.append("%N")
+
 			if is_move_report then
-				Result.append(board_out(moves_board))
+				Result.append(get_helper.board_out(moves_board))
 			else
-				Result.append(board_out(game_board))
+				Result.append(get_helper.board_out(game_board))
 			end
 
 				-- Uncomment for a more a readable

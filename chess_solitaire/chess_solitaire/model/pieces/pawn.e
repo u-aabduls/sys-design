@@ -26,6 +26,7 @@ feature -- Initialization
 	make
 			-- Initialize a PAWN object: "P"
 		do
+			Precursor
 			create type.make_from_string ("P")
 		end
 
@@ -51,10 +52,5 @@ feature -- Queries
 			possible_moves[row, col] := Current.get_type
 			Result := possible_moves
 		end
-
-
-invariant
-	unchanged_type:
-		type ~ "P"
 
 end
