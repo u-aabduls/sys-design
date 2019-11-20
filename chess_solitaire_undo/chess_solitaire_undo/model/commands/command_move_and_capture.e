@@ -56,6 +56,7 @@ feature -- Interface Features
 				-- (i.e. the default `PIECE`
 			game.get_game_board[from_r, from_c] := chess_piece
 			game.set_piece_count(game.get_piece_count - 1)
+			game.set_game_report ("Game In Progress...")
 
 		end
 

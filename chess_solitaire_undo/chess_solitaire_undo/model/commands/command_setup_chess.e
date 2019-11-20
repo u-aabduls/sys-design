@@ -95,6 +95,8 @@ feature -- Interface Features
 			game.get_game_board[row, col] := piece
 				-- Decrement the total number of pieces
 			game.set_piece_count(game.get_piece_count - 1)
+				-- Update the game report
+			game.set_game_report("Game being Setup...")
 		end
 
 

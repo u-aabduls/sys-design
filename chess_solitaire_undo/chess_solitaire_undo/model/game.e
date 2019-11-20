@@ -324,7 +324,9 @@ feature -- Requests
 				game_started
 
 			report_properly_set:
-				report ~ "Game In Progress..."
+					report ~ "Game In Progress..."
+				or  report ~ "Game Over: You Lose!"
+				or  report ~ "Game Over: You Win!"
 		end
 
 
@@ -437,13 +439,8 @@ feature -- Queries
 			Result.append(pieces_count.out)
 			Result.append("%N")
 
-				-- Report the error if:
-			if error_handler.is_set then
-				report := error_handler.get_error.deep_twin
-				error_handler.init
-
 				-- Game is lost if:
-			elseif game_started and pieces_count = 0 then
+			if game_started and pieces_count = 0 then
 				report := "Game Over: You Lose!"
 				game_over := true
 
@@ -458,6 +455,12 @@ feature -- Queries
 				report := "Game Over: You Lose!"
 				game_over := true
 
+			end
+
+				-- Report the error if:
+			if error_handler.is_set then
+				report := error_handler.get_error.deep_twin
+				error_handler.init
 			end
 
 				-- Append the `report` state

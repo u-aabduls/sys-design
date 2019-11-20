@@ -35,6 +35,8 @@ feature -- Interface Features
 		do
 				-- set `game_started` back to `false`
 			game.set_game_started(false)
+				-- set `game_over` back to false
+			game.set_game_over(false)
 				-- set `report` back to `game`s setup state
 			game.set_game_report("Game being Setup...")
 		end
